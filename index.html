@@ -11,13 +11,13 @@
     />
 
     <!-- --------- CSS ---------- -->
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/style.min.css" />
 
     <!-- --------- FAVICON ---------- -->
     <link
       rel="shortcut icon"
-      href="assets/images/favicon.png"
       type="image/x-icon"
+      href="assets/images/favicon.png"
     />
 
     <!------- SWEET ALERT CSS AND JS -------->
@@ -58,7 +58,7 @@
           </ul>
         </div>
         <div class="nav-button">
-          <button class="btn">
+          <button class="btn" onclick="downloadCV();">
             Download CV <i class="uil uil-file-alt"></i>
           </button>
         </div>
@@ -91,8 +91,8 @@
               </p>
             </div>
             <div class="featured-text-btn">
-              <button class="btn blue-btn">Hire Me</button>
-              <button class="btn">
+              <a class="btn blue-btn" href="#contact">Hire Me</a>
+              <button class="btn" onclick="downloadCV();">
                 Download CV <i class="uil uil-file-alt"></i>
               </button>
             </div>
@@ -141,7 +141,7 @@
                   contributions as a Java Backend Developer.
                 </p>
                 <div class="about-btn">
-                  <button class="btn">
+                  <button class="btn" onclick="downloadCV()">
                     Download CV <i class="uil uil-import"></i>
                   </button>
                 </div>
@@ -211,17 +211,16 @@
           </div>
           <div class="project-container">
             <div class="project-box" onclick="project1()">
-              <i class="uil uil-award"></i>
+              <i class="uil uil-books"></i>
               <h3 style="text-align: center">
-                The Integrated Learning and Job <br />
-                Portal CodeVenture
+                The Integrated Learning and Job Portal CodeVenture
               </h3>
               <label>Final Year Project</label>
               <label>Angular + Spring Boot</label>
             </div>
 
             <div class="project-box" onclick="project2()">
-              <i class="uil uil-award"></i>
+              <i class="uil uil-blogger"></i>
               <h3 style="text-align: center">
                 Code Genius Blog in Java<br />Servlet and Hibernate
               </h3>
@@ -229,32 +228,32 @@
               <label>Java servlets, JSP and Hibernate</label>
             </div>
 
-            <div class="project-box">
-              <i class="uil uil-award"></i>
+            <div class="project-box" onclick="project3()">
+              <i class="uil uil-comment-alt-edit"></i>
               <h3 style="text-align: center">
-                To DoProinJava Servlet<br />
+                To Do Pro in Java Servlet<br />
                 and Hibernate
               </h3>
               <label>Self Learning.</label>
               <label>Java servlets, JSP and Hibernate</label>
             </div>
 
-            <div class="project-box">
-              <i class="uil uil-award"></i>
+            <div class="project-box" onclick="project4()">
+              <i class="uil uil-plane-departure"></i>
               <h3 style="text-align: center">Airline Reservation System</h3>
               <label>Semester Project - 2nd Year</label>
               <label>Web Application in PHP</label>
             </div>
 
-            <div class="project-box">
-              <i class="uil uil-award"></i>
-              <h3 style="text-align: center">Desktop CRUD Application</h3>
+            <div class="project-box" onclick="project5()">
+              <i class="uil uil-film"></i>
+              <h3 style="text-align: center">Netflix Clone using Angular</h3>
               <label>Self Learning.</label>
               <label>Java Swing and MySQL</label>
             </div>
 
-            <div class="project-box">
-              <i class="uil uil-award"></i>
+            <div class="project-box" onclick="project6()">
+              <i class="uil uil-edit"></i>
               <h3 style="text-align: center">Desktop CRUD Application</h3>
               <label>Self Learning.</label>
               <label>Java Swing and MySQL</label>
@@ -270,14 +269,17 @@
             <span>Do you have a project in your mind, contact me here</span>
           </div>
           <div class="row">
-            <div class="col">
+            <div class="col-contact">
               <div class="contact-info">
                 <h2>Find Me <i class="uil uil-corner-right-down"></i></h2>
-                <p><i class="uil uil-envelope"></i> Email: john@doe.com</p>
-                <p><i class="uil uil-phone"></i> Tel: +250 708 770 000</p>
+                <p><i class="uil uil-envelope"></i> Karachi, Sindh, Pakistan</p>
+                <p>
+                  <i class="uil uil-envelope"></i> Email: Sarwech99@Gmail.com
+                </p>
+                <p><i class="uil uil-phone"></i> Tel: +92 313 3599267</p>
               </div>
             </div>
-            <div class="col">
+            <!-- <div class="col">
               <div class="form-control">
                 <div class="form-inputs">
                   <input type="text" class="input-field" placeholder="Name" />
@@ -292,7 +294,7 @@
                   </button>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </section>
       </main>
@@ -349,6 +351,6 @@
     <script src="https://unpkg.com/scrollreveal"></script>
 
     <!-- ----- MAIN JS ----- -->
-    <script src="assets/js/main.js"></script>
+    <script src="assets/js/main.min.js"></script>
   </body>
 </html>
