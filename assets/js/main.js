@@ -65,7 +65,7 @@
 
 /* ----- TYPING EFFECT ----- */
  var typingEffect = new Typed(".typedText",{
-    strings : ["Java Developer","Spring Boot Dev","Java J2EE Dev"],
+    strings : ["Java Developer","Spring Boot Dev","Angular Developer"],
     loop : true,
     typeSpeed : 100, 
     backSpeed : 80,
