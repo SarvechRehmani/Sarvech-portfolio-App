@@ -1,0 +1,249 @@
+.container {
+  width: 90%;
+  margin: 40px auto;
+}
+.main_container {
+  background-color: var(--c-base);
+  border: 1px solid var(--stroke-elements);
+  -moz-border-radius: var(--_radius-xl);
+  border-radius: var(--_radius-xl);
+  padding: 40px;
+}
+@media only screen and (max-width: 400px) {
+  .main_container {
+    padding: 20px 10px;
+  }
+}
+
+.dashboard-title {
+  margin: 40px 0 0 65px;
+}
+
+@media only screen and (max-width: 400px) {
+  .dashboard-title {
+    margin: 0 0 0 10px; /* Override for screens 300px or less */
+  }
+}
+
+.d-social-links {
+  border: 1px solid var(--icon-bright);
+  display: inline-block;
+  padding: 10px 15px;
+  border-radius: var(--_radius-s);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.link-color {
+  color: var(--t-accent);
+  text-decoration: underline;
+  font-size: 2rem;
+}
+.social-action-btn {
+  padding: 15px 20px;
+  border-radius: var(--_radius-m);
+}
+
+.disabled {
+  pointer-events: none !important;
+  opacity: 0.6 !important;
+}
+
+.edu-col-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.swal2-show {
+  border-radius: 15% !important;
+}
+.social-lines__item {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--stroke-elements);
+}
+
+/* Custom alert like Tailwind CSS */
+.custom-alert {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: var(--_radius-m);
+  font-family: Arial, sans-serif;
+}
+
+.custom-alert-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.custom-alert-text {
+  margin-left: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.custom-alert-link {
+  font-weight: 600;
+  text-decoration: underline;
+  color: #2c5282;
+}
+
+.custom-alert-link:hover {
+  text-decoration: none;
+}
+
+.custom-alert-close {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00000050;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.custom-alert-close:hover {
+  background-color: #000000a4; /* Lighter blue on hover */
+}
+
+.custom-alert-close-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.custom-alert-close:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #3182ce8b;
+}
+
+/* Alerts colors */
+.DEFAULT {
+  background-color: var(--bg-alert-default);
+  color: var(--t-alert-default);
+}
+.ERROR {
+  background-color: var(--bg-alert-error);
+  color: var(--t-alert-error);
+}
+
+.SUCCESS {
+  background-color: var(--bg-alert-success);
+  color: var(--t-alert-success);
+}
+
+.WARNING {
+  background-color: var(--bg-alert-warning);
+  color: var(--t-alert-warning);
+}
+
+/* Select Option backgroun color */
+option {
+  background-color: var(--base-tint);
+}
+
+/* Skills shows */
+.skills-box {
+  margin: 25px;
+}
+.skills-header {
+  margin-bottom: 10px;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.skills-list span,
+.project-skill {
+  font-size: 18px;
+  padding: 4px 20px;
+  border-radius: var(--_radius-s);
+  color: white;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+}
+
+/* Error text for validate forms */
+.error {
+  font-size: 20px;
+  color: red !important;
+}
+
+/* actions buttons and rouded btn  */
+.edit {
+  color: var(--t-alert-default) !important;
+  background-color: var(--bg-alert-default) !important;
+}
+.delete {
+  color: var(--t-alert-error) !important;
+  background-color: var(--bg-alert-error) !important;
+}
+
+.rounded-btn:hover {
+  background-color: #0000008b !important;
+  color: white !important;
+}
+
+.danger-btn {
+  background-color: red;
+  color: white;
+  transition: 0.2s ease-in-out;
+}
+
+.danger-btn:hover {
+  background-color: rgba(148, 0, 0, 0.812);
+}
+
+.action-btns {
+  padding: 10px 20px;
+  border-radius: var(--_radius-m);
+}
+
+.edit-action-btns {
+  background-color: var(--bg-alert-warning);
+  color: var(--t-alert-warning);
+}
+
+.edit-action-btns:hover {
+  background-color: var(--bg-h-alert-warning);
+}
+
+.delete-action-btns {
+  background-color: var(--bg-alert-error);
+  color: var(--t-alert-error);
+}
+
+.delete-action-btns:hover {
+  background-color: var(--bg-h-alert-error);
+}
+
+/* Sidebar image upload icon */
+.camera-icon {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+}
+.sidebar_avatar_image:hover .camera-icon {
+  opacity: 1;
+}
+.camera-icon i {
+  font-size: 16px;
+}
+
+.sidebar_avatar_image {
+  position: relative;
+}
