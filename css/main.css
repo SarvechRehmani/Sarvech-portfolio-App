@@ -4428,6 +4428,9 @@ form textarea:required:valid {
   }
 }
 
+.disabled {
+  cursor: not-allowed;
+}
 /* ------------------------------------------------*/
 /* Features Socials End */
 /* ------------------------------------------------*/
