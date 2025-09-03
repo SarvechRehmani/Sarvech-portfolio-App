@@ -450,6 +450,17 @@ function setIconsForTheme(theme) {
   });
 }
 
+// function chnageAvatarTheme(theme) {
+//   const pathForLight = `img/avatars/avatar2.jpg`;
+//   const pathFordark = `img/avatars/avatar3.jpg`;
+//   var avartar = document.getElementById("avatar-image");
+//   if (theme == "dark") {
+//     avartar.src = pathFordark;
+//   } else {
+//     avartar.src = pathForLight;
+//   }
+// }
+
 // --------------------------------------------- //
 
 function loadTheme(theme) {
@@ -461,6 +472,7 @@ function loadTheme(theme) {
   }
   root.setAttribute("color-scheme", `${theme}`);
   setIconsForTheme(theme);
+  // chnageAvatarTheme(theme);
 }
 
 themeBtn.addEventListener("click", () => {
