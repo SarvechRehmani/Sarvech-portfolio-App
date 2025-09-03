@@ -2309,10 +2309,10 @@ form input:focus:required:invalid,
 form textarea:focus:required:invalid {
   color: var(--t-default);
 }
-form input:required:valid,
+/* form input:required:valid,
 form textarea:required:valid {
   color: var(--t-default);
-}
+} */
 
 .form__reply {
   position: absolute;
