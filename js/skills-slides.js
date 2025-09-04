@@ -34,7 +34,7 @@ const TAGS = [
   "JWT Authentication",
 ];
 
-const DURATION = 55000;
+const DURATION = 85000;
 const ROWS = 4;
 const TAGS_PER_ROW = 30;
 
