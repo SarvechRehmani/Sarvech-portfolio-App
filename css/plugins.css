@@ -8044,6 +8044,9 @@ table {
 .z-3 {
   z-index: 3 !important;
 }
+.z-1000 {
+  z-index: 1000 !important;
+}
 
 @media (min-width: 576px) {
   .float-sm-start {
