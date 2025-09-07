@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sarvech.netlify.app/</loc>
     <priority>1.0</priority>
   </url>
-
-  <!-- Individual project pages -->
   <url>
     <loc>https://sarvech.netlify.app/projects/syncbox</loc>
     <priority>0.8</priority>
@@ -43,5 +40,4 @@
     <loc>https://sarvech.netlify.app/projects/to-do-pro</loc>
     <priority>0.8</priority>
   </url>
-
 </urlset>
