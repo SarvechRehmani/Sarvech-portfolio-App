@@ -88,9 +88,9 @@ const App = () =>
               React.createElement(Tag, { text: tag, key: tag })
             )
         )
-      ) /*#__PURE__*/
+      ) /*#__PURE__*/,
 
-      //   React.createElement("div", { className: "fade" })
+      React.createElement("div", { className: "fade" })
     )
   );
 const skillSlid = document.getElementById("skill-slid");

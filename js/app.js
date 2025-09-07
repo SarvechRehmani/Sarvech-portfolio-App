@@ -31,7 +31,7 @@ $(function () {
     document.getElementById("loaderContent").classList.add("fade-out");
     setTimeout(() => {
       document.getElementById("loader").classList.add("loaded");
-    }, 300);
+    }, 0);
 
     gsap.set(".animate-headline", { y: 50, opacity: 0 });
     ScrollTrigger.batch(".animate-headline", {

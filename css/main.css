@@ -79,11 +79,13 @@
   --gradient-three--light: #5683b1; /* Gradient end */
 
   --slide-content-bg-light: rgba(
-    255,
-    255,
-    255,
-    0.544
+    198,
+    198,
+    198,
+    0.357
   ); /* slide content bg color */
+
+  --overlay-certificate-light: rgba(255, 255, 255, 0.607);
 
   /* dark color scheme */
   --base--dark: #1a202c;
@@ -122,6 +124,8 @@
   --t-per-bright-dark: #27293b;
   --t-per-medium-dark: #626577;
   --t-per-muted-dark: #717586;
+
+  --overlay-certificate-dark: rgba(37, 37, 37, 0.483);
 }
 @media only screen and (min-width: 1600px) {
   :root {
@@ -158,6 +162,8 @@
     --gradient-three: var(--gradient-three--light);
 
     --slide-content-bg: var(--slide-content-bg-light);
+
+    --overlay-certificate: var(--overlay-certificate-light);
   }
 }
 @media (prefers-color-scheme: dark) {
@@ -187,6 +193,7 @@
     --gradient-three: var(--gradient-three--dark);
 
     --slide-content-bg: var(--slide-content-bg-dark);
+    --overlay-certificate: var(--overlay-certificate-dark);
   }
 }
 [color-scheme="light"] {
@@ -215,6 +222,7 @@
   --gradient-three: var(--gradient-three--light);
 
   --slide-content-bg: var(--slide-content-bg-light);
+  --overlay-certificate: var(--overlay-certificate-light);
 }
 
 [color-scheme="dark"] {
@@ -243,6 +251,7 @@
   --gradient-three: var(--gradient-three--dark);
 
   --slide-content-bg: var(var(--slide-content-bg-dark));
+  --overlay-certificate: var(--overlay-certificate-dark);
 }
 
 /* ------------------------------------------------*/
@@ -3567,6 +3576,7 @@ form textarea:required:valid {
 .gallery__descr p {
   display: none;
 }
+
 .gallery__descr .rounded-tag {
   display: -webkit-inline-box;
   display: -moz-inline-box;
@@ -3639,11 +3649,17 @@ form textarea:required:valid {
   padding: 3rem;
   background-color: rgba(0, 0, 0, 0.4);
 }
-.pswp__caption__center h5 {
+
+.pswp__caption__center h5,
+.pswp__caption__center h6 {
   font: normal 700 -moz-calc(var(--_size) * 1.5) / 1.2 var(--_font-accent);
   font: normal 700 calc(var(--_size) * 1.5) / 1.2 var(--_font-accent);
   color: var(--t-per-bright-light);
   margin-bottom: 1.2rem;
+}
+.pswp__caption__center h5:hover {
+  color: var(--t-accent);
+  text-decoration: underline;
 }
 .pswp__caption__center .rounded-tag {
   display: -webkit-inline-box;
@@ -4434,3 +4450,13 @@ form textarea:required:valid {
 /* ------------------------------------------------*/
 /* Features Socials End */
 /* ------------------------------------------------*/
+
+.certificate-overlay {
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background-color: var(--overlay-certificate);
+  position: absolute;
+  left: 0;
+  top: 0;
+}

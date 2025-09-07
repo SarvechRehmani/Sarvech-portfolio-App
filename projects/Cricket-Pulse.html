@@ -133,6 +133,8 @@
         <div class="avatar__block">
           <div class="avatar__logo d-flex align-items-center">
             <div class="logo__image">
+              <!-- Your Logo Here!!! -->
+              <!-- <img src="img/logo.svg" alt="Braxton - Personal Portfolio & Resume HTML Template Logo"> -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="85"
@@ -155,7 +157,9 @@
 
                   <!-- Mask for Knockout Text -->
                   <mask id="text-mask">
+                    <!-- Full white background (shows everything) -->
                     <rect width="100%" height="100%" fill="white" />
+                    <!-- "S" knocks out the shape (black = transparent in mask) -->
                     <text
                       x="50%"
                       y="50%"
@@ -170,9 +174,10 @@
                   </mask>
                 </defs>
 
+                <!-- Apply gradient and knockout mask -->
                 <path
                   d="M51,0H34C15.2,0,0,15.2,0,34v17c0,14.3,8.9,26.6,21.4,31.6C25.3,84.1,29.5,85,34,85h17
-                     c6,0,11.7-1.6,16.6-4.3C78.1,74.6,85,63.6,85,51V34C85,15.2,69.8,0,51,0z"
+                   c6,0,11.7-1.6,16.6-4.3C78.1,74.6,85,63.6,85,51V34C85,15.2,69.8,0,51,0z"
                   fill="url(#gradientFill)"
                   mask="url(#text-mask)"
                 />
@@ -184,7 +189,8 @@
           </div>
           <div class="avatar__image">
             <img
-              src="../img/avatars/1024x1024_a02.png"
+              id="avatar-image"
+              src="../img/avatars/avatar.jpg"
               alt="Braxton - Personal Portfolio & Resume HTML Template Avatar"
             />
           </div>
@@ -252,7 +258,7 @@
           <div class="avatar__btnholder">
             <a
               class="btn btn-default btn-fullwidth btn-hover btn-hover-accent"
-              href="/#contact"
+              href="#contact"
               target="_blank"
             >
               <span class="btn-caption">Let's Work Together!</span>
@@ -273,7 +279,7 @@
               <div class="slides">
                 <div class="slide">
                   <img
-                    src="../img/projects/project7/project700.png"
+                    src="../img/projects/project7/project700.jpg"
                     alt="Cricket Pulse Dashboard"
                   />
                   <div class="slide-content">
