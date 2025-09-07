@@ -1,0 +1,45 @@
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://sarvech.netlify.app/</loc>robots.txt
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Individual project pages -->
+  <url>
+    <loc>https://sarvech.netlify.app/projects/syncbox</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/ss-email-sender</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/cricket-pulse</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/codeventure</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/code-genius-blog</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/desktop-crud-application</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/netflix-clone-angular</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/airline-reservation-system-php</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sarvech.netlify.app/projects/to-do-pro</loc>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>
