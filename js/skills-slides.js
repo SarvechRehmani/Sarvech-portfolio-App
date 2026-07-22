@@ -1,6 +1,3 @@
-import React from "https://cdn.skypack.dev/react";
-import ReactDOM from "https://cdn.skypack.dev/react-dom";
-
 const TAGS = [
   "Java",
   "SQL",
@@ -8,90 +5,87 @@ const TAGS = [
   "Spring MVC",
   "Spring Security",
   "Spring Data JPA",
-  "Spring ORM",
   "Hibernate",
   "TypeScript",
   "JavaScript",
   "HTML5",
   "CSS3",
-  "Angular (Material)",
+  "Angular Material",
   "Bootstrap 5",
   "Tailwind CSS",
   "IntelliJ IDEA",
   "VS Code",
   "Postman",
   "Git/GitHub",
-  "MySQL Workbench",
+  "MySQL",
   "Eclipse",
   "NetBeans",
-  "XAMPP",
   "SOAP UI",
-  "RESTful API development",
+  "REST API",
   "SOAP Web Services",
   "SMTP",
-  "Object-Oriented Programming (OOP)",
+  "OOP",
   "MVC Architecture",
-  "JWT Authentication",
+  "JWT Authentication"
 ];
 
-const DURATION = 85000;
 const ROWS = 4;
 const TAGS_PER_ROW = 30;
+const DURATION = 85000;
+const shuffle = (array) => {
+  return [...array].sort(() => Math.random() - 0.5);
+};
+const createTag = (text) => {
+  const div = document.createElement("div");
+  div.className = "tag";
 
-const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
-const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  div.innerHTML = `
+    <span>#</span> ${text}
+  `;
+  return div;
+};
+const createSlider = (tags, reverse = false) => {
+  const slider = document.createElement("div");
+  slider.className = "loop-slider";
 
-const InfiniteLoopSlider = ({ children, duration, reverse = false }) => {
-  return /*#__PURE__*/ React.createElement(
-    "div",
-    {
-      className: "loop-slider",
-      style: {
-        "--duration": `${duration}ms`,
-        "--direction": reverse ? "reverse" : "normal",
-      },
-    } /*#__PURE__*/,
-
-    React.createElement("div", { className: "inner-skill" }, children, children)
+  slider.style.setProperty(
+    "--duration",
+    `${DURATION}ms`
   );
+  slider.style.setProperty(
+    "--direction",
+    reverse ? "reverse" : "normal"
+  );
+  
+  const inner = document.createElement("div");
+  inner.className = "inner-skill";
+  const fragment = document.createDocumentFragment();
+  [...tags, ...tags].forEach(tag => {
+    fragment.appendChild(createTag(tag));
+  });
+  inner.appendChild(fragment);
+  slider.appendChild(inner);
+  return slider;
 };
 
-const Tag = ({ text } /*#__PURE__*/) =>
-  React.createElement(
-    "div",
-    { className: "tag" },
-    /*#__PURE__*/ React.createElement("span", null, "#"),
-    " ",
-    text
-  );
-
-const App = () =>
-  /*#__PURE__*/
-  React.createElement(
-    "div",
-    { className: "app-skill" } /*#__PURE__*/,
-
-    React.createElement(
-      "div",
-      { className: "tag-list" },
-      [...new Array(ROWS)].map((_, i /*#__PURE__*/) =>
-        React.createElement(
-          InfiniteLoopSlider,
-          {
-            key: i,
-            duration: random(DURATION - 5000, DURATION + 5000),
-            reverse: i % 2,
-          },
-          shuffle(TAGS)
-            .slice(0, TAGS_PER_ROW)
-            .map((tag /*#__PURE__*/) =>
-              React.createElement(Tag, { text: tag, key: tag })
-            )
-        )
-      ) /*#__PURE__*/,
-
-      React.createElement("div", { className: "fade" })
-    )
-  );
-const skillSlid = document.getElementById("skill-slid");
-ReactDOM.render(/*#__PURE__*/ React.createElement(App, null), skillSlid);
+const renderSkills = () => {
+  const container = document.getElementById("skill-slid");
+  container.style.setProperty("overflow","hidden");
+  container.style.setProperty("border-radius","24px");
+  const fragment = document.createDocumentFragment();
+  for(let i = 0; i < ROWS; i++){
+    const rowTags = shuffle(TAGS)
+      .slice(0,TAGS_PER_ROW);
+    fragment.appendChild(
+      createSlider(
+        rowTags,
+        i % 2 === 1
+      )
+    );
+  }
+  const fade = document.createElement("div");
+  fade.className="fade";
+  fragment.appendChild(fade);
+  container.appendChild(fragment);
+};
+renderSkills();

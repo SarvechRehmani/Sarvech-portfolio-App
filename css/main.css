@@ -4460,3 +4460,16 @@ form textarea:required:valid {
   left: 0;
   top: 0;
 }
+
+
+.loop-slider {
+  animation: scroll var(--duration) linear infinite;
+  animation-direction: var(--direction);
+  will-change: transform;
+  margin: 10px;
+}
+
+.inner-skill {
+  display:flex;
+  gap:20px;
+}

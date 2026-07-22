@@ -24,41 +24,63 @@ $(function () {
   // --------------------------------------------- //
   // Loader & Loading Animation Start
   // --------------------------------------------- //
-  const content = document.querySelector("body");
-  const imgLoad = imagesLoaded(content);
 
-  imgLoad.on("done", (instance) => {
-    document.getElementById("loaderContent").classList.add("fade-out");
-    setTimeout(() => {
-      document.getElementById("loader").classList.add("loaded");
-    }, 0);
+  const loader = document.getElementById("loader");
+  const loaderContent = document.getElementById("loaderContent");
 
-    gsap.set(".animate-headline", { y: 50, opacity: 0 });
+  imagesLoaded(document.body).on("done", () => {
+    loaderContent?.classList.add("fade-out");
+    loader?.classList.add("loaded");
+
+    gsap.set(".animate-headline", {
+      y: 50,
+      opacity: 0,
+    });
+
     ScrollTrigger.batch(".animate-headline", {
       interval: 0.1,
       batchMax: 4,
-      duration: 6,
       onEnter: (batch) =>
         gsap.to(batch, {
-          opacity: 1,
           y: 0,
+          opacity: 1,
           ease: "sine",
-          stagger: { each: 0.15, grid: [1, 4] },
+          stagger: {
+            each: 0.15,
+            grid: [1, 4],
+          },
           overwrite: true,
         }),
+
       onLeave: (batch) =>
-        gsap.set(batch, { opacity: 1, y: 0, overwrite: true }),
+        gsap.set(batch, {
+          y: 0,
+          opacity: 1,
+          overwrite: true,
+        }),
+
       onEnterBack: (batch) =>
-        gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
+        gsap.to(batch, {
+          y: 0,
+          opacity: 1,
+          stagger: 0.15,
+          overwrite: true,
+        }),
+
       onLeaveBack: (batch) =>
-        gsap.set(batch, { opacity: 0, y: 50, overwrite: true }),
+        gsap.set(batch, {
+          y: 50,
+          opacity: 0,
+          overwrite: true,
+        }),
     });
   });
 
   // --------------------------------------------- //
   // Bootstrap Scroll Spy Plugin Settings Start
   // --------------------------------------------- //
-  const scrollSpy = new bootstrap.ScrollSpy(document.body, {
+
+  new bootstrap.ScrollSpy(document.body, {
     target: "#menu",
     smoothScroll: true,
     rootMargin: "0px 0px -40%",
@@ -67,35 +89,37 @@ $(function () {
   // --------------------------------------------- //
   // Lenis Scroll Plugin Start
   // --------------------------------------------- //
-  const lenis = new Lenis();
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
+  // const lenis = new Lenis();
+  // function raf(time) {
+  // lenis.raf(time);
+  // requestAnimationFrame(raf);
+  // }
+  // requestAnimationFrame(raf);
 
   // ------------------------------------------------------------------------------ //
-  // Parallax (apply parallax effect to any element with a data-speed attribute) Start
+  // Parallax (Apply parallax effect to elements with data-speed)
   // ------------------------------------------------------------------------------ //
+
   gsap.to("[data-speed]", {
-    y: (i, el) =>
-      (1 - parseFloat(el.getAttribute("data-speed"))) *
-      ScrollTrigger.maxScroll(window),
+    y: (_, element) =>
+      (1 - Number(element.dataset.speed)) * ScrollTrigger.maxScroll(window),
+
     ease: "none",
+
     scrollTrigger: {
       start: 0,
       end: "max",
+      scrub: true,
       invalidateOnRefresh: true,
-      scrub: 0,
     },
   });
 
   // --------------------------------------------- //
   // Scroll Animations Start
   // --------------------------------------------- //
+
   // Animation In Up
-  const animateInUp = document.querySelectorAll(".animate-in-up");
-  animateInUp.forEach((element) => {
+  document.querySelectorAll(".animate-in-up").forEach((element) => {
     gsap.fromTo(
       element,
       {
@@ -104,157 +128,156 @@ $(function () {
         ease: "sine",
       },
       {
-        y: 0,
         opacity: 1,
+        y: 0,
         scrollTrigger: {
           trigger: element,
           toggleActions: "play none none reverse",
         },
-      }
+      },
     );
   });
 
   // Animation Rotation
-  const animateRotation = document.querySelectorAll(".animate-rotation");
-  animateRotation.forEach((section) => {
-    var value = $(section).data("value");
+  document.querySelectorAll(".animate-rotation").forEach((element) => {
     gsap.fromTo(
-      section,
+      element,
       {
-        ease: "sine",
         rotate: 0,
+        ease: "sine",
       },
       {
-        rotate: value,
+        rotate: Number(element.dataset.value) || 0,
         scrollTrigger: {
-          trigger: section,
+          trigger: element,
           scrub: true,
           toggleActions: "play none none reverse",
         },
-      }
+      },
     );
   });
 
-  // Animation Cards Stack
-  // Grid 2x
-  gsap.set(".animate-card-2", { y: 100, opacity: 0 });
-  ScrollTrigger.batch(".animate-card-2", {
-    interval: 0.1,
-    batchMax: 2,
-    duration: 6,
-    onEnter: (batch) =>
-      gsap.to(batch, {
-        opacity: 1,
-        y: 0,
-        ease: "sine",
-        stagger: { each: 0.15, grid: [1, 2] },
-        overwrite: true,
-      }),
-    onLeave: (batch) => gsap.set(batch, { opacity: 1, y: 0, overwrite: true }),
-    onEnterBack: (batch) =>
-      gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
-    onLeaveBack: (batch) =>
-      gsap.set(batch, { opacity: 0, y: 100, overwrite: true }),
-  });
+  // Reusable Card Animation
+  function createCardAnimation(selector, y, batchMax, grid) {
+    gsap.set(selector, {
+      y,
+      opacity: 0,
+    });
 
-  // Grid 3x
-  gsap.set(".animate-card-3", { y: 50, opacity: 0 });
-  ScrollTrigger.batch(".animate-card-3", {
-    interval: 0.1,
-    batchMax: 3,
-    duration: 3,
-    onEnter: (batch) =>
-      gsap.to(batch, {
-        opacity: 1,
-        y: 0,
-        ease: "sine",
-        stagger: { each: 0.15, grid: [1, 3] },
-        overwrite: true,
-      }),
-    onLeave: (batch) => gsap.set(batch, { opacity: 1, y: 0, overwrite: true }),
-    onEnterBack: (batch) =>
-      gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
-    onLeaveBack: (batch) =>
-      gsap.set(batch, { opacity: 0, y: 50, overwrite: true }),
-  });
+    ScrollTrigger.batch(selector, {
+      interval: 0.1,
+      batchMax,
 
-  // Grid 5x
-  gsap.set(".animate-card-5", { y: 50, opacity: 0 });
-  ScrollTrigger.batch(".animate-card-5", {
-    interval: 0.1,
-    batchMax: 5,
-    delay: 1000,
-    onEnter: (batch) =>
-      gsap.to(batch, {
-        opacity: 1,
-        y: 0,
-        ease: "sine",
-        stagger: { each: 0.15, grid: [1, 5] },
-        overwrite: true,
-      }),
-    onLeave: (batch) => gsap.set(batch, { opacity: 1, y: 0, overwrite: true }),
-    onEnterBack: (batch) =>
-      gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
-    onLeaveBack: (batch) =>
-      gsap.set(batch, { opacity: 0, y: 50, overwrite: true }),
-  });
+      onEnter: (batch) =>
+        gsap.to(batch, {
+          y: 0,
+          opacity: 1,
+          ease: "sine",
+          stagger: {
+            each: 0.15,
+            grid: [1, grid],
+          },
+          overwrite: true,
+        }),
 
-  ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-2", { y: 0, opacity: 1 })
-  );
-  ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-3", { y: 0, opacity: 1 })
-  );
-  ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-5", { y: 0, opacity: 1 })
-  );
+      onLeave: (batch) =>
+        gsap.set(batch, {
+          y: 0,
+          opacity: 1,
+          overwrite: true,
+        }),
+
+      onEnterBack: (batch) =>
+        gsap.to(batch, {
+          y: 0,
+          opacity: 1,
+          stagger: 0.15,
+          overwrite: true,
+        }),
+
+      onLeaveBack: (batch) =>
+        gsap.set(batch, {
+          y,
+          opacity: 0,
+          overwrite: true,
+        }),
+    });
+
+    ScrollTrigger.addEventListener("refreshInit", () => {
+      gsap.set(selector, {
+        y: 0,
+        opacity: 1,
+      });
+    });
+  }
+
+  // Initialize
+  createCardAnimation(".animate-card-2", 100, 2, 2);
+  createCardAnimation(".animate-card-3", 50, 3, 3);
+  createCardAnimation(".animate-card-5", 50, 5, 5);
 
   // --------------------------------------------- //
   // Smooth Scrolling Start
   // --------------------------------------------- //
-  $('a[href*="#"]')
-    .not('[href="#"]')
-    .not('[href="#0"]')
-    .click(function (event) {
-      if (
-        location.pathname.replace(/^\//, "") ==
-          this.pathname.replace(/^\//, "") &&
-        location.hostname == this.hostname
-      ) {
-        var target = $(this.hash);
-        target = target.length
-          ? target
-          : $("[name=" + this.hash.slice(1) + "]");
-        if (target.length) {
-          event.preventDefault();
-          $("html, body").animate(
+  // --------------------------------------------- //
+  // Smooth Scrolling Start
+  // --------------------------------------------- //
+
+  // --------------------------------------------- //
+  // Smooth Scrolling Start
+  // --------------------------------------------- //
+
+  document
+    .querySelectorAll('a[href*="#"]:not([href="#"]):not([href="#0"])')
+    .forEach((link) => {
+      link.addEventListener("click", function (event) {
+        const { pathname, hostname, hash } = this;
+
+        const isSamePage =
+          window.location.pathname === pathname &&
+          window.location.hostname === hostname;
+
+        if (!isSamePage) return;
+
+        let target = $(hash);
+
+        if (!target.length) {
+          target = document.querySelector(`[name="${hash.slice(1)}"]`);
+        }
+
+        if (!target.length) return;
+
+        event.preventDefault();
+
+        // URL update
+        history.pushState(null, "", hash);
+
+        $("html, body")
+          .stop(true)
+          .animate(
             {
               scrollTop: target.offset().top,
             },
             1000,
-            function () {
-              var $target = $(target);
-              $target.focus();
-              if ($target.is(":focus")) {
-                return false;
-              } else {
-                $target.attr("tabindex", "-1");
-                $target.focus();
-              }
-            }
+            () => {
+              target.attr("tabindex", "-1").trigger("focus");
+            },
           );
-        }
-      }
+      });
     });
-
   // --------------------------------------------- //
   // Swiper Slider Start
   // --------------------------------------------- //
-  const toolsSlider = document.querySelector("tools-slider");
-  const testimonialsSlider = document.querySelector("testimonials-slider");
+  // --------------------------------------------- //
+  // Swiper Slider Start
+  // --------------------------------------------- //
 
-  if (!toolsSlider) {
-    const swiper = new Swiper(".swiper-tools", {
+  const toolsSlider = document.querySelector(".swiper-tools");
+  const testimonialsSlider = document.querySelector(".swiper-testimonials");
+  console.log(toolsSlider);
+  console.log(testimonialsSlider);
+  if (toolsSlider) {
+    new Swiper(toolsSlider, {
       spaceBetween: 20,
       autoplay: {
         delay: 1500,
@@ -262,23 +285,12 @@ $(function () {
       },
       loop: true,
       grabCursor: true,
-      loopFillGroupWithBlank: true,
       breakpoints: {
-        1600: {
-          slidesPerView: 5,
-        },
-        1200: {
-          slidesPerView: 4,
-        },
-        768: {
-          slidesPerView: 3,
-        },
-        576: {
-          slidesPerView: 2,
-        },
-        0: {
-          slidesPerView: 2,
-        },
+        1600: { slidesPerView: 5 },
+        1200: { slidesPerView: 4 },
+        768: { slidesPerView: 3 },
+        576: { slidesPerView: 2 },
+        0: { slidesPerView: 2 },
       },
       pagination: {
         el: ".swiper-pagination",
@@ -287,14 +299,16 @@ $(function () {
     });
   }
 
-  if (!toolsSlider) {
-    const swiper = new Swiper(".swiper-testimonials", {
+  if (testimonialsSlider) {
+    new Swiper(testimonialsSlider, {
       slidesPerView: 1,
       spaceBetween: 20,
-      autoplay: true,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
       speed: 1000,
       loop: true,
-      loopFillGroupWithBlank: true,
       navigation: {
         nextEl: ".swiper-button-next",
         prevEl: ".swiper-button-prev",
@@ -305,82 +319,96 @@ $(function () {
   // --------------------------------------------- //
   // Contact Form Start
   // --------------------------------------------- //
-  $("#contact-form").submit(function () {
-    //Change
-    var th = $(this);
-    $.ajax({
-      type: "POST",
-      url: "mail.php", //Change
-      data: th.serialize(),
-    }).done(function () {
-      $(".contact").find(".form").addClass("is-hidden");
-      $(".contact").find(".form__reply").addClass("is-visible");
-      setTimeout(function () {
-        // Done Functions
-        $(".contact").find(".form__reply").removeClass("is-visible");
-        $(".contact").find(".form").delay(300).removeClass("is-hidden");
-        th.trigger("reset");
-      }, 5000);
+
+  const form = document.getElementById("contact-form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    await fetch("/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams(formData).toString(),
     });
-    return false;
+    document.querySelector(".contact .form").classList.add("is-hidden");
+    document.querySelector(".contact .form__reply").classList.add("is-visible");
+    setTimeout(() => {
+      document
+        .querySelector(".contact .form__reply")
+        .classList.remove("is-visible");
+      document.querySelector(".contact .form").classList.remove("is-hidden");
+      form.reset();
+    }, 5000);
   });
+
+  // $("#contact-form").submit(function () {
+  //   //Change
+  //   var th = $(this);
+  //   $.ajax({
+  //     type: "POST",
+  //     url: "mail.php", //Change
+  //     data: th.serialize(),
+  //   }).done(function () {
+  //     $(".contact").find(".form").addClass("is-hidden");
+  //     $(".contact").find(".form__reply").addClass("is-visible");
+  //     setTimeout(function () {
+  //       // Done Functions
+  //       $(".contact").find(".form__reply").removeClass("is-visible");
+  //       $(".contact").find(".form").delay(300).removeClass("is-hidden");
+  //       th.trigger("reset");
+  //     }, 5000);
+  //   });
+  //   return false;
+  // });
 
   // --------------------------------------------- //
   // Modernizr SVG Fallback Start
   // --------------------------------------------- //
-  if (!Modernizr.svg) {
-    $("img[src*='svg']").attr("src", function () {
-      return $(this).attr("src").replace(".svg", ".png");
-    });
-  }
+  // if (!Modernizr.svg) {
+  //   $("img[src*='svg']").attr("src", function () {
+  //     return $(this).attr("src").replace(".svg", ".png");
+  //   });
+  // }
 
   // --------------------------------------------- //
   // Chrome Smooth Scroll Start
   // --------------------------------------------- //
-  try {
-    $.browserSelector();
-    if ($("html").hasClass("chrome")) {
-      $.smoothScroll();
-    }
-  } catch (err) {}
+  // try {
+  //   $.browserSelector();
+  //   if ($("html").hasClass("chrome")) {
+  //     $.smoothScroll();
+  //   }
+  // } catch (err) {}
 
   // --------------------------------------------- //
   // Images Moving Ban Start
   // --------------------------------------------- //
-  $("img, a").on("dragstart", function (event) {
-    event.preventDefault();
+  document.querySelectorAll("img, a").forEach((element) => {
+    element.addEventListener("dragstart", (event) => {
+      event.preventDefault();
+    });
   });
-
   // --------------------------------------------- //
   // Detecting Mobile/Desktop Start
   // --------------------------------------------- //
-  var isMobile = false;
-  if (
-    /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    )
-  ) {
-    $("html").addClass("touch");
-    isMobile = true;
-  } else {
-    $("html").addClass("no-touch");
-    isMobile = false;
-  }
+  const isMobile = window.matchMedia("(pointer: coarse)").matches;
+  document.documentElement.classList.add(isMobile ? "touch" : "no-touch");
+
   //IE, Edge
-  var isIE =
-    /MSIE 9/i.test(navigator.userAgent) ||
-    /rv:11.0/i.test(navigator.userAgent) ||
-    /MSIE 10/i.test(navigator.userAgent) ||
-    /Edge\/\d+/.test(navigator.userAgent);
+  const isIE = /MSIE|Trident|Edge\/\d+/.test(navigator.userAgent);
 
   // --------------------------------------------- //
   // PhotoSwipe Gallery Images Replace Start
   // --------------------------------------------- //
-  $(".gallery__link").each(function () {
-    $(this)
-      .append('<div class="picture"></div>')
-      .children(".picture")
-      .css({ "background-image": "url(" + $(this).attr("data-image") + ")" });
+  document.querySelectorAll(".gallery__link").forEach((link) => {
+    const picture = document.createElement("div");
+
+    picture.className = "picture";
+    picture.style.backgroundImage = `url(${link.dataset.image})`;
+
+    link.appendChild(picture);
   });
 });
 
@@ -388,24 +416,29 @@ $(function () {
 // Color Switch Start
 // --------------------------------------------- //
 const themeBtn = document.querySelector(".color-switcher");
-
 function getCurrentTheme() {
-  let theme = window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-  localStorage.getItem("template.theme")
-    ? (theme = localStorage.getItem("template.theme"))
-    : null;
-  return theme;
+  return (
+    localStorage.getItem("template.theme") ||
+    (window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light")
+  );
 }
-
 // --------------------------------------------- //
-// Set favicon icons for Theme Start
+// Set favicon icons for Theme Start             //
 // --------------------------------------------- //
 function setIconsForTheme(theme) {
-  const path = `https://sarvech.netlify.app/img/favicon/${theme}`;
+  const path = `/img/favicon/${theme}`;
 
-  // Define new icons for the selected theme
+  document
+    .querySelectorAll(
+      `
+    link[rel="icon"],
+    link[rel="apple-touch-icon"]
+  `,
+    )
+    .forEach((link) => link.remove());
+
   const icons = [
     {
       rel: "icon",
@@ -436,53 +469,40 @@ function setIconsForTheme(theme) {
       sizes: "512x512",
       href: `${path}/android-chrome-512x512.png`,
     },
-    { rel: "icon", href: `${path}/favicon.ico` }, // Fallback
+    {
+      rel: "icon",
+      href: `${path}/favicon.ico`,
+    },
   ];
 
-  // Append each icon
-  const head = document.head;
   icons.forEach((iconData) => {
     const link = document.createElement("link");
-    Object.entries(iconData).forEach(([key, value]) => {
-      link.setAttribute(key, value);
-    });
-    head.appendChild(link);
+    Object.entries(iconData).forEach(([key, value]) =>
+      link.setAttribute(key, value),
+    );
+    document.head.appendChild(link);
   });
 }
 
-// function chnageAvatarTheme(theme) {
-//   const pathForLight = `img/avatars/avatar2.jpg`;
-//   const pathFordark = `img/avatars/avatar3.jpg`;
-//   var avartar = document.getElementById("avatar-image");
-//   if (theme == "dark") {
-//     avartar.src = pathFordark;
-//   } else {
-//     avartar.src = pathForLight;
-//   }
-// }
-
 // --------------------------------------------- //
+// Theme Toggle Start                            //
+// --------------------------------------------- //
+const root = document.documentElement;
 
 function loadTheme(theme) {
-  const root = document.querySelector(":root");
-  if (theme === "light") {
-    themeBtn.innerHTML = `<em></em><i class="ph-bold ph-moon-stars"></i>`;
-  } else {
-    themeBtn.innerHTML = `<em></em><i class="ph-bold ph-sun"></i>`;
-  }
-  root.setAttribute("color-scheme", `${theme}`);
+  themeBtn.innerHTML =
+    theme === "light"
+      ? `<em></em><i class="ph-bold ph-moon-stars"></i>`
+      : `<em></em><i class="ph-bold ph-sun"></i>`;
+
+  root.setAttribute("color-scheme", theme);
   setIconsForTheme(theme);
-  // chnageAvatarTheme(theme);
 }
 
 themeBtn.addEventListener("click", () => {
-  let theme = getCurrentTheme();
-  if (theme === "dark") {
-    theme = "light";
-  } else {
-    theme = "dark";
-  }
-  localStorage.setItem("template.theme", `${theme}`);
+  const theme = getCurrentTheme() === "dark" ? "light" : "dark";
+
+  localStorage.setItem("template.theme", theme);
   loadTheme(theme);
 });
 
@@ -491,17 +511,17 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 // --------------------------------------------- //
-// Typing Text Start
+// Typing Text Start                             //
 // --------------------------------------------- //
-var typedTexts = document.querySelectorAll(".text");
-var designations = [];
-typedTexts.forEach((text) => {
-  designations.push(text.textContent);
-});
-var typingEffect = new Typed("#typedText", {
-  strings: designations,
+new Typed("#typedText", {
+  strings: [
+    "Java Developer",
+    "Spring Boot Dev",
+    "Angular Developer",
+  ],
+  // strings: designations,
   typeSpeed: 100,
-  backSpeed: 80,
-  smartBackspace: true, // this is a default
+  backSpeed: 50,
+  smartBackspace: true,
   loop: true,
 });

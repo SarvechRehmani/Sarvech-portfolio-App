@@ -1,124 +1,111 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const slides = document.querySelectorAll(".slide");
-  const dots = document.querySelectorAll(".dot");
+  const carousel = document.querySelector(".carousel");
+  const slides = [...document.querySelectorAll(".slide")];
+  const dots = [...document.querySelectorAll(".dot")];
   const prevBtn = document.querySelector(".prev");
   const nextBtn = document.querySelector(".next");
+
+  if (!carousel || !slides.length) return;
+
   let currentSlide = 0;
   let isAnimating = false;
+  let autoplayInterval = null;
+  let touchStartX = 0;
+  let touchStartTime = 0;
 
-  function updateSlides(direction = "next") {
+  const ANIMATION_DURATION = 0;
+  const AUTOPLAY_DELAY = 4000;
+  const SWIPE_DISTANCE = 50;
+  const SWIPE_VELOCITY = 0;
+
+  function updateSlides() {
     if (isAnimating) return;
+
     isAnimating = true;
 
-    // Remove active class from all slides first
-    slides.forEach((slide) => {
-      slide.classList.remove("active", "previous");
+    slides.forEach((slide, index) => {
+      slide.classList.toggle("active", index === currentSlide);
+      slide.classList.toggle("previous", false);
     });
 
-    // Update dots
-    dots.forEach((dot) => dot.classList.remove("active"));
-    dots[currentSlide].classList.add("active");
-
-    // Add active class to current slide
-    slides[currentSlide].classList.add("active");
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("active", index === currentSlide);
+    });
 
     setTimeout(() => {
       isAnimating = false;
-    }, 1200);
+    }, ANIMATION_DURATION);
   }
 
-  function nextSlide() {
-    if (isAnimating) return;
-    const previousSlide = currentSlide;
-    currentSlide = (currentSlide + 1) % slides.length;
+  function goToSlide(index) {
+    if (isAnimating || index === currentSlide) return;
 
-    // Add previous class to the slide that's being transitioned out
-    slides[previousSlide].classList.add("previous");
-    updateSlides("next");
+    slides[currentSlide].classList.add("previous");
+    currentSlide = (index + slides.length) % slides.length;
+
+    updateSlides();
   }
 
-  function prevSlide() {
-    if (isAnimating) return;
-    const previousSlide = currentSlide;
-    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-
-    // Add previous class to the slide that's being transitioned out
-    slides[previousSlide].classList.add("previous");
-    updateSlides("prev");
-  }
-
-  // Event listeners
-  nextBtn.addEventListener("click", nextSlide);
-  prevBtn.addEventListener("click", prevSlide);
-
-  dots.forEach((dot, index) => {
-    dot.addEventListener("click", () => {
-      if (isAnimating || currentSlide === index) return;
-      const previousSlide = currentSlide;
-      currentSlide = index;
-      slides[previousSlide].classList.add("previous");
-      updateSlides();
-    });
-  });
-
-  // Keyboard navigation
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight") nextSlide();
-    if (e.key === "ArrowLeft") prevSlide();
-  });
-
-  // Auto-play with pause on hover
-  let autoplayInterval;
+  const nextSlide = () => goToSlide(currentSlide + 1);
+  const prevSlide = () => goToSlide(currentSlide - 1);
 
   function startAutoplay() {
-    autoplayInterval = setInterval(nextSlide, 4000);
+    stopAutoplay();
+    autoplayInterval = setInterval(nextSlide, AUTOPLAY_DELAY);
   }
 
   function stopAutoplay() {
-    clearInterval(autoplayInterval);
+    if (autoplayInterval) {
+      clearInterval(autoplayInterval);
+      autoplayInterval = null;
+    }
   }
 
-  document
-    .querySelector(".carousel")
-    .addEventListener("mouseenter", stopAutoplay);
-  document
-    .querySelector(".carousel")
-    .addEventListener("mouseleave", startAutoplay);
+  nextBtn?.addEventListener("click", nextSlide);
+  prevBtn?.addEventListener("click", prevSlide);
 
-  // Touch events for mobile with improved sensitivity
-  let touchStartX = 0;
-  let touchStartTime = 0;
-  const carousel = document.querySelector(".carousel");
-
-  carousel.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartTime = Date.now();
-    stopAutoplay();
+  dots.forEach((dot, index) => {
+    dot.addEventListener("click", () => goToSlide(index));
   });
 
-  carousel.addEventListener("touchend", (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const touchEndTime = Date.now();
-    const touchDuration = touchEndTime - touchStartTime;
-    const touchDistance = touchStartX - touchEndX;
+  document.addEventListener("keydown", ({ key }) => {
+    if (key === "ArrowRight") nextSlide();
+    else if (key === "ArrowLeft") prevSlide();
+  });
 
-    // Calculate swipe velocity
-    const velocity = Math.abs(touchDistance / touchDuration);
+  carousel.addEventListener("mouseenter", stopAutoplay);
+  carousel.addEventListener("mouseleave", startAutoplay);
 
-    // Adjust sensitivity based on velocity and distance
-    if (velocity > 0.3 || Math.abs(touchDistance) > 50) {
-      if (touchDistance > 0) {
-        nextSlide();
-      } else {
-        prevSlide();
+  carousel.addEventListener(
+    "touchstart",
+    ({ changedTouches }) => {
+      touchStartX = changedTouches[0].screenX;
+      touchStartTime = performance.now();
+      stopAutoplay();
+    },
+    { passive: true }
+  );
+
+  carousel.addEventListener(
+    "touchend",
+    ({ changedTouches }) => {
+      const distance = touchStartX - changedTouches[0].screenX;
+      const duration = performance.now() - touchStartTime;
+      const velocity = Math.abs(distance / duration);
+
+      if (
+        Math.abs(distance) > SWIPE_DISTANCE ||
+        velocity > SWIPE_VELOCITY
+      ) {
+        distance > 0 ? nextSlide() : prevSlide();
       }
-    }
 
-    startAutoplay();
-  });
+      startAutoplay();
+    },
+    { passive: true }
+  );
 
-  // Initial setup
-  slides[currentSlide].classList.add("active");
-  dots[currentSlide].classList.add("active");
+  slides[0].classList.add("active");
+  dots[0]?.classList.add("active");
   startAutoplay();
 });
