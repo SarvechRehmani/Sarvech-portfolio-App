@@ -64,7 +64,7 @@ class MyAvatar extends HTMLElement {
                 </div>
               </div>
               <div class="avatar__image">
-                <img id="avatar-image" src="${avatarData.imageSrc}" alt="${avatarData.imageAlt}" />
+                <img id="avatar-image" src="${avatarData.imageSrc}" alt="${avatarData.imageAlt}" fetchpriority="high" decoding="sync" />
               </div>
             </div>
             <!-- specialization -->
