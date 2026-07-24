@@ -32,60 +32,66 @@ $(function () {
     loaderContent?.classList.add("fade-out");
     loader?.classList.add("loaded");
 
-    gsap.set(".animate-headline", {
-      y: 50,
-      opacity: 0,
-    });
+    const headlines = document.querySelectorAll(".animate-headline");
 
-    ScrollTrigger.batch(".animate-headline", {
-      interval: 0.1,
-      batchMax: 4,
-      onEnter: (batch) =>
-        gsap.to(batch, {
-          y: 0,
-          opacity: 1,
-          ease: "sine",
-          stagger: {
-            each: 0.15,
-            grid: [1, 4],
-          },
-          overwrite: true,
-        }),
+    if (headlines.length) {
+      gsap.set(headlines, {
+        y: 50,
+        opacity: 0,
+      });
 
-      onLeave: (batch) =>
-        gsap.set(batch, {
-          y: 0,
-          opacity: 1,
-          overwrite: true,
-        }),
+      ScrollTrigger.batch(headlines, {
+        interval: 0.1,
+        batchMax: 4,
 
-      onEnterBack: (batch) =>
-        gsap.to(batch, {
-          y: 0,
-          opacity: 1,
-          stagger: 0.15,
-          overwrite: true,
-        }),
+        onEnter: (batch) =>
+          gsap.to(batch, {
+            y: 0,
+            opacity: 1,
+            ease: "sine",
+            stagger: {
+              each: 0.15,
+              grid: [1, 4],
+            },
+            overwrite: true,
+          }),
 
-      onLeaveBack: (batch) =>
-        gsap.set(batch, {
-          y: 50,
-          opacity: 0,
-          overwrite: true,
-        }),
-    });
+        onLeave: (batch) =>
+          gsap.set(batch, {
+            y: 0,
+            opacity: 1,
+            overwrite: true,
+          }),
+
+        onEnterBack: (batch) =>
+          gsap.to(batch, {
+            y: 0,
+            opacity: 1,
+            stagger: 0.15,
+            overwrite: true,
+          }),
+
+        onLeaveBack: (batch) =>
+          gsap.set(batch, {
+            y: 50,
+            opacity: 0,
+            overwrite: true,
+          }),
+      });
+    }
   });
 
   // --------------------------------------------- //
   // Bootstrap Scroll Spy Plugin Settings Start
   // --------------------------------------------- //
-
-  new bootstrap.ScrollSpy(document.body, {
+window.addEventListener("load", () => {
+  bootstrap.ScrollSpy.getOrCreateInstance(document.body, {
     target: "#menu",
     smoothScroll: true,
-    rootMargin: "0px 0px -40%",
-  });
-
+    rootMargin: "0px 0px 0px 0px",
+    threshold: [0, 0.01, 0.05],
+  }).refresh();
+});
   // --------------------------------------------- //
   // Lenis Scroll Plugin Start
   // --------------------------------------------- //
@@ -100,20 +106,23 @@ $(function () {
   // Parallax (Apply parallax effect to elements with data-speed)
   // ------------------------------------------------------------------------------ //
 
-  gsap.to("[data-speed]", {
-    y: (_, element) =>
-      (1 - Number(element.dataset.speed)) * ScrollTrigger.maxScroll(window),
+  const speedElements = document.querySelectorAll("[data-speed]");
 
-    ease: "none",
+  if (speedElements.length) {
+    gsap.to(speedElements, {
+      y: (_, element) =>
+        (1 - Number(element.dataset.speed)) * ScrollTrigger.maxScroll(window),
 
-    scrollTrigger: {
-      start: 0,
-      end: "max",
-      scrub: true,
-      invalidateOnRefresh: true,
-    },
-  });
+      ease: "none",
 
+      scrollTrigger: {
+        start: 0,
+        end: "max",
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
+    });
+  }
   // --------------------------------------------- //
   // Scroll Animations Start
   // --------------------------------------------- //
@@ -212,16 +221,17 @@ $(function () {
   }
 
   // Initialize
-  createCardAnimation(".animate-card-2", 100, 2, 2);
-  createCardAnimation(".animate-card-3", 50, 3, 3);
-  createCardAnimation(".animate-card-5", 50, 5, 5);
+  if (document.querySelector(".animate-card-2")) {
+    createCardAnimation(".animate-card-2", 100, 2, 2);
+  }
 
-  // --------------------------------------------- //
-  // Smooth Scrolling Start
-  // --------------------------------------------- //
-  // --------------------------------------------- //
-  // Smooth Scrolling Start
-  // --------------------------------------------- //
+  if (document.querySelector(".animate-card-3")) {
+    createCardAnimation(".animate-card-3", 50, 3, 3);
+  }
+
+  if (document.querySelector(".animate-card-5")) {
+    createCardAnimation(".animate-card-5", 50, 5, 5);
+  }
 
   // --------------------------------------------- //
   // Smooth Scrolling Start
@@ -265,17 +275,13 @@ $(function () {
           );
       });
     });
-  // --------------------------------------------- //
-  // Swiper Slider Start
-  // --------------------------------------------- //
+
   // --------------------------------------------- //
   // Swiper Slider Start
   // --------------------------------------------- //
 
   const toolsSlider = document.querySelector(".swiper-tools");
   const testimonialsSlider = document.querySelector(".swiper-testimonials");
-  console.log(toolsSlider);
-  console.log(testimonialsSlider);
   if (toolsSlider) {
     new Swiper(toolsSlider, {
       spaceBetween: 20,
@@ -315,53 +321,6 @@ $(function () {
       },
     });
   }
-
-  // --------------------------------------------- //
-  // Contact Form Start
-  // --------------------------------------------- //
-
-  const form = document.getElementById("contact-form");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    await fetch("/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(formData).toString(),
-    });
-    document.querySelector(".contact .form").classList.add("is-hidden");
-    document.querySelector(".contact .form__reply").classList.add("is-visible");
-    setTimeout(() => {
-      document
-        .querySelector(".contact .form__reply")
-        .classList.remove("is-visible");
-      document.querySelector(".contact .form").classList.remove("is-hidden");
-      form.reset();
-    }, 5000);
-  });
-
-  // $("#contact-form").submit(function () {
-  //   //Change
-  //   var th = $(this);
-  //   $.ajax({
-  //     type: "POST",
-  //     url: "mail.php", //Change
-  //     data: th.serialize(),
-  //   }).done(function () {
-  //     $(".contact").find(".form").addClass("is-hidden");
-  //     $(".contact").find(".form__reply").addClass("is-visible");
-  //     setTimeout(function () {
-  //       // Done Functions
-  //       $(".contact").find(".form__reply").removeClass("is-visible");
-  //       $(".contact").find(".form").delay(300).removeClass("is-hidden");
-  //       th.trigger("reset");
-  //     }, 5000);
-  //   });
-  //   return false;
-  // });
 
   // --------------------------------------------- //
   // Modernizr SVG Fallback Start
@@ -412,18 +371,6 @@ $(function () {
   });
 });
 
-// --------------------------------------------- //
-// Color Switch Start
-// --------------------------------------------- //
-const themeBtn = document.querySelector(".color-switcher");
-function getCurrentTheme() {
-  return (
-    localStorage.getItem("template.theme") ||
-    (window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light")
-  );
-}
 // --------------------------------------------- //
 // Set favicon icons for Theme Start             //
 // --------------------------------------------- //
@@ -483,45 +430,3 @@ function setIconsForTheme(theme) {
     document.head.appendChild(link);
   });
 }
-
-// --------------------------------------------- //
-// Theme Toggle Start                            //
-// --------------------------------------------- //
-const root = document.documentElement;
-
-function loadTheme(theme) {
-  themeBtn.innerHTML =
-    theme === "light"
-      ? `<em></em><i class="ph-bold ph-moon-stars"></i>`
-      : `<em></em><i class="ph-bold ph-sun"></i>`;
-
-  root.setAttribute("color-scheme", theme);
-  setIconsForTheme(theme);
-}
-
-themeBtn.addEventListener("click", () => {
-  const theme = getCurrentTheme() === "dark" ? "light" : "dark";
-
-  localStorage.setItem("template.theme", theme);
-  loadTheme(theme);
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-  loadTheme(getCurrentTheme());
-});
-
-// --------------------------------------------- //
-// Typing Text Start                             //
-// --------------------------------------------- //
-new Typed("#typedText", {
-  strings: [
-    "Java Developer",
-    "Spring Boot Dev",
-    "Angular Developer",
-  ],
-  // strings: designations,
-  typeSpeed: 100,
-  backSpeed: 50,
-  smartBackspace: true,
-  loop: true,
-});

@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liquid Glass · iOS 26</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ═══════════════════════════════════════════════
+               VARIABLES (your existing + glass extensions)
+               ═══════════════════════════════════════════════ */
+      :root {
+        /* -- existing sizes & radii -- */
+        --_size: 1.6rem;
+        --_font-default: "Syne", sans-serif;
+        --_font-accent: "Syne", sans-serif;
+        --_radius-s: 1.5rem;
+        --_radius-m: 2.2rem;
+        --_radius-l: 3rem;
+        --_radius-xl: 3.6rem;
+        --_animspeed-fast: 0.1s;
+        --_animspeed-medium: 0.3s;
+        --_animspeed-slow: 0.6s;
+        --_animbezier: cubic-bezier(0.23, 0.65, 0.74, 1.09);
+
+        /* -- light theme -- */
+        --base--light: #e6ebf4;
+        --base-tint--light: #ebf0f7;
+        --base-shade--light: #bdc1c8;
+        --accent--light: #aa70e0;
+        --secondary--light: #7059e2;
+        --secondary-rgba--light: rgba(112, 89, 226, 0.3);
+        --stroke-controls--light: #a8b0c1;
+        --stroke-controls-neutral--light: rgba(0, 0, 0, 0.3);
+        --stroke-elements--light: #d1d5e0;
+        --t-bright--light: #22232c;
+        --t-medium--light: #424550;
+        --t-muted--light: #666a79;
+        --t-accent--light: #8f56cc;
+        --t-secondary--light: #5d4ec4;
+        --t-disabled--light: #3c3e48;
+        --t-placeholder--light: #626570;
+        --base-opp--light: #111111;
+        --t-opp-bright--light: #ebf0f7;
+        --t-opp-medium--light: #c7c6d3;
+        --t-opp-muted--light: #a1a1af;
+        --icon-bright--light: #3f3f3f;
+        --gradient-one--light: #498acb;
+        --gradient-two--light: #97cbff;
+        --gradient-three--light: #5683b1;
+        --slide-content-bg-light: rgba(198, 198, 198, 0.357);
+        --overlay-certificate-light: rgba(255, 255, 255, 0.607);
+
+        /* -- dark theme -- */
+        --base--dark: #1a202c;
+        --base-tint--dark: #2d3748;
+        --base-shade--dark: #171923;
+        --accent--dark: #63b3ed;
+        --secondary--dark: #a0aec0;
+        --secondary-rgba--dark: rgba(160, 174, 192, 0.2);
+        --stroke-controls--dark: #4a5568;
+        --stroke-controls-neutral--dark: rgba(255, 255, 255, 0.3);
+        --stroke-elements--dark: #2d3748;
+        --t-bright--dark: #f7fafc;
+        --t-medium--dark: #e2e8f0;
+        --t-muted--dark: #a0aec0;
+        --t-accent--dark: #63b3ed;
+        --t-secondary--dark: #a0aec0;
+        --t-disabled--dark: #718096;
+        --t-placeholder--dark: #4a5568;
+        --base-opp--dark: #f7fafc;
+        --t-opp-bright--dark: #1a202c;
+        --t-opp-medium--dark: #4a5568;
+        --t-opp-muted--dark: #718096;
+        --gradient-one--dark: #2c5282;
+        --gradient-two--dark: #63b3ed;
+        --gradient-three--dark: #2b6cb0;
+        --slide-content-bg-dark: rgba(21, 21, 21, 0.57);
+        --overlay-certificate-dark: rgba(37, 37, 37, 0.483);
+
+        /* -- permanent -- */
+        --per-base: #111111;
+        --per-base-tint: #212121;
+        --per-stroke-controls: rgba(255, 255, 255, 0.4);
+        --t-per-bright-light: #ffffff;
+        --t-per-medium-light: #f2f2f2;
+        --t-per-muted-light: #c7c6d3;
+        --t-per-bright-dark: #27293b;
+        --t-per-medium-dark: #626577;
+        --t-per-muted-dark: #717586;
+
+        /* ── ✦ GLASS EXTENSIONS ✦ ── */
+        --glass-bg-light: rgba(255, 255, 255, 0.45);
+        --glass-border-light: rgba(255, 255, 255, 0.55);
+        --glass-shadow-light: rgba(0, 0, 0, 0.06);
+        --glass-highlight-light: rgba(255, 255, 255, 0.7);
+        --glass-inner-light: rgba(255, 255, 255, 0.25);
+
+        --glass-bg-dark: rgba(20, 28, 45, 0.55);
+        --glass-border-dark: rgba(255, 255, 255, 0.12);
+        --glass-shadow-dark: rgba(0, 0, 0, 0.35);
+        --glass-highlight-dark: rgba(255, 255, 255, 0.08);
+        --glass-inner-dark: rgba(255, 255, 255, 0.04);
+
+        --glass-blur: 24px;
+        --glass-radius: var(--_radius-l);
+        --glass-border-w: 1.2px;
+      }
+
+      /* ── theme defaults ── */
+      @media (prefers-color-scheme: light) {
+        :root {
+          --base: var(--base--light);
+          --base-tint: var(--base-tint--light);
+          --base-shade: var(--base-shade--light);
+          --accent: var(--accent--light);
+          --secondary: var(--secondary--light);
+          --secondary-rgba: var(--secondary-rgba--light);
+          --stroke-controls: var(--stroke-controls--light);
+          --stroke-controls-neutral: var(--stroke-controls-neutral--light);
+          --stroke-elements: var(--stroke-elements--light);
+          --t-bright: var(--t-bright--light);
+          --t-medium: var(--t-medium--light);
+          --t-muted: var(--t-muted--light);
+          --t-accent: var(--t-accent--light);
+          --t-secondary: var(--t-secondary--light);
+          --t-disabled: var(--t-disabled--light);
+          --t-placeholder: var(--t-placeholder--light);
+          --base-opp: var(--base-opp--light);
+          --t-opp-bright: var(--t-opp-bright--light);
+          --t-opp-medium: var(--t-opp-medium--light);
+          --t-opp-muted: var(--t-opp-muted--light);
+          --gradient-one: var(--gradient-one--light);
+          --gradient-two: var(--gradient-two--light);
+          --gradient-three: var(--gradient-three--light);
+          --slide-content-bg: var(--slide-content-bg-light);
+          --overlay-certificate: var(--overlay-certificate-light);
+          /* glass */
+          --glass-bg: var(--glass-bg-light);
+          --glass-border: var(--glass-border-light);
+          --glass-shadow: var(--glass-shadow-light);
+          --glass-highlight: var(--glass-highlight-light);
+          --glass-inner: var(--glass-inner-light);
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --base: var(--base--dark);
+          --base-tint: var(--base-tint--dark);
+          --base-shade: var(--base-shade--dark);
+          --accent: var(--accent--dark);
+          --secondary: var(--secondary--dark);
+          --secondary-rgba: var(--secondary-rgba--dark);
+          --stroke-controls: var(--stroke-controls--dark);
+          --stroke-controls-neutral: var(--stroke-controls-neutral--dark);
+          --stroke-elements: var(--stroke-elements--dark);
+          --t-bright: var(--t-bright--dark);
+          --t-medium: var(--t-medium--dark);
+          --t-muted: var(--t-muted--dark);
+          --t-accent: var(--t-accent--dark);
+          --t-secondary: var(--t-secondary--dark);
+          --t-disabled: var(--t-disabled--dark);
+          --t-placeholder: var(--t-placeholder--dark);
+          --base-opp: var(--base-opp--dark);
+          --t-opp-bright: var(--t-opp-bright--dark);
+          --t-opp-medium: var(--t-opp-medium--dark);
+          --t-opp-muted: var(--t-opp-muted--dark);
+          --gradient-one: var(--gradient-one--dark);
+          --gradient-two: var(--gradient-two--dark);
+          --gradient-three: var(--gradient-three--dark);
+          --slide-content-bg: var(--slide-content-bg-dark);
+          --overlay-certificate: var(--overlay-certificate-dark);
+          /* glass */
+          --glass-bg: var(--glass-bg-dark);
+          --glass-border: var(--glass-border-dark);
+          --glass-shadow: var(--glass-shadow-dark);
+          --glass-highlight: var(--glass-highlight-dark);
+          --glass-inner: var(--glass-inner-dark);
+        }
+      }
+
+      [color-scheme="light"] {
+        --base: var(--base--light);
+        --base-tint: var(--base-tint--light);
+        --base-shade: var(--base-shade--light);
+        --accent: var(--accent--light);
+        --secondary: var(--secondary--light);
+        --secondary-rgba: var(--secondary-rgba--light);
+        --stroke-controls: var(--stroke-controls--light);
+        --stroke-controls-neutral: var(--stroke-controls-neutral--light);
+        --stroke-elements: var(--stroke-elements--light);
+        --t-bright: var(--t-bright--light);
+        --t-medium: var(--t-medium--light);
+        --t-muted: var(--t-muted--light);
+        --t-accent: var(--t-accent--light);
+        --t-secondary: var(--t-secondary--light);
+        --t-disabled: var(--t-disabled--light);
+        --t-placeholder: var(--t-placeholder--light);
+        --base-opp: var(--base-opp--light);
+        --t-opp-bright: var(--t-opp-bright--light);
+        --t-opp-medium: var(--t-opp-medium--light);
+        --t-opp-muted: var(--t-opp-muted--light);
+        --gradient-one: var(--gradient-one--light);
+        --gradient-two: var(--gradient-two--light);
+        --gradient-three: var(--gradient-three--light);
+        --slide-content-bg: var(--slide-content-bg-light);
+        --overlay-certificate: var(--overlay-certificate-light);
+        --glass-bg: var(--glass-bg-light);
+        --glass-border: var(--glass-border-light);
+        --glass-shadow: var(--glass-shadow-light);
+        --glass-highlight: var(--glass-highlight-light);
+        --glass-inner: var(--glass-inner-light);
+      }
+      [color-scheme="dark"] {
+        --base: var(--base--dark);
+        --base-tint: var(--base-tint--dark);
+        --base-shade: var(--base-shade--dark);
+        --accent: var(--accent--dark);
+        --secondary: var(--secondary--dark);
+        --secondary-rgba: var(--secondary-rgba--dark);
+        --stroke-controls: var(--stroke-controls--dark);
+        --stroke-controls-neutral: var(--stroke-controls-neutral--dark);
+        --stroke-elements: var(--stroke-elements--dark);
+        --t-bright: var(--t-bright--dark);
+        --t-medium: var(--t-medium--dark);
+        --t-muted: var(--t-muted--dark);
+        --t-accent: var(--t-accent--dark);
+        --t-secondary: var(--t-secondary--dark);
+        --t-disabled: var(--t-disabled--dark);
+        --t-placeholder: var(--t-placeholder--dark);
+        --base-opp: var(--base-opp--dark);
+        --t-opp-bright: var(--t-opp-bright--dark);
+        --t-opp-medium: var(--t-opp-medium--dark);
+        --t-opp-muted: var(--t-opp-muted--dark);
+        --gradient-one: var(--gradient-one--dark);
+        --gradient-two: var(--gradient-two--dark);
+        --gradient-three: var(--gradient-three--dark);
+        --slide-content-bg: var(--slide-content-bg-dark);
+        --overlay-certificate: var(--overlay-certificate-dark);
+        --glass-bg: var(--glass-bg-dark);
+        --glass-border: var(--glass-border-dark);
+        --glass-shadow: var(--glass-shadow-dark);
+        --glass-highlight: var(--glass-highlight-dark);
+        --glass-inner: var(--glass-inner-dark);
+      }
+
+      /* ═══════════════════════════════════════════════
+               RESET & BASE
+               ═══════════════════════════════════════════════ */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        font-size: 62.5%;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--_font-default);
+        font-size: var(--_size);
+        background: var(--base);
+        color: var(--t-bright);
+        min-height: 100vh;
+        transition:
+          background 0.5s var(--_animbezier),
+          color 0.4s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 2rem;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── subtle animated bg orbs ── */
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(110px);
+        opacity: 0.25;
+        pointer-events: none;
+        z-index: 0;
+        transition: background 0.8s ease;
+      }
+      body::before {
+        width: 60vmax;
+        height: 60vmax;
+        top: -20%;
+        left: -10%;
+        background: var(--gradient-one);
+        animation: orbFloat 28s ease-in-out infinite alternate;
+      }
+      body::after {
+        width: 50vmax;
+        height: 50vmax;
+        bottom: -20%;
+        right: -10%;
+        background: var(--gradient-three);
+        animation: orbFloat 32s ease-in-out infinite alternate-reverse;
+      }
+
+      @keyframes orbFloat {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(8%, 6%) scale(1.2);
+        }
+      }
+
+      /* ═══════════════════════════════════════════════
+               GLASS CARD — core component
+               ═══════════════════════════════════════════════ */
+      .glass {
+        position: relative;
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur));
+        -webkit-backdrop-filter: blur(var(--glass-blur));
+        border-radius: var(--glass-radius);
+        border: var(--glass-border-w) solid var(--glass-border);
+        box-shadow:
+          0 8px 32px var(--glass-shadow),
+          inset 0 1px 0 var(--glass-highlight),
+          inset 0 -1px 0 var(--glass-inner);
+        transition:
+          background 0.5s var(--_animbezier),
+          border-color 0.4s ease,
+          box-shadow 0.5s var(--_animbezier),
+          transform 0.4s var(--_animbezier);
+        /* liquid hover lift */
+        will-change: transform;
+      }
+
+      .glass::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(
+          circle at 20% 10%,
+          var(--glass-highlight),
+          transparent 70%
+        );
+        pointer-events: none;
+        opacity: 0.3;
+        transition: opacity 0.5s ease;
+      }
+
+      .glass:hover {
+        transform: translateY(-4px) scale(1.005);
+        box-shadow:
+          0 16px 48px var(--glass-shadow),
+          inset 0 1px 0 var(--glass-highlight),
+          inset 0 -1px 0 var(--glass-inner);
+      }
+
+      .glass:hover::after {
+        opacity: 0.5;
+      }
+
+      /* ── glass variants ── */
+      .glass-glow {
+        box-shadow:
+          0 8px 32px var(--glass-shadow),
+          0 0 60px rgba(170, 112, 224, 0.08),
+          inset 0 1px 0 var(--glass-highlight),
+          inset 0 -1px 0 var(--glass-inner);
+      }
+
+      .glass-glow:hover {
+        box-shadow:
+          0 16px 48px var(--glass-shadow),
+          0 0 80px rgba(170, 112, 224, 0.15),
+          inset 0 1px 0 var(--glass-highlight),
+          inset 0 -1px 0 var(--glass-inner);
+      }
+
+      .glass-dark {
+        --glass-bg: rgba(10, 14, 26, 0.55);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-highlight: rgba(255, 255, 255, 0.06);
+      }
+
+      .glass-light {
+        --glass-bg: rgba(255, 255, 255, 0.5);
+        --glass-border: rgba(255, 255, 255, 0.65);
+        --glass-highlight: rgba(255, 255, 255, 0.8);
+      }
+
+      /* ═══════════════════════════════════════════════
+               LAYOUT — portfolio grid
+               ═══════════════════════════════════════════════ */
+      .portfolio {
+        position: relative;
+        z-index: 1;
+        max-width: 1200px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3.2rem;
+      }
+
+      @media (min-width: 768px) {
+        .portfolio {
+          grid-template-columns: 1fr 1fr;
+        }
+        .portfolio-header {
+          grid-column: 1 / -1;
+        }
+        .portfolio-feature {
+          grid-column: 1 / -1;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 3.2rem;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════
+               HEADER
+               ═══════════════════════════════════════════════ */
+      .portfolio-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2.8rem 3.6rem;
+        gap: 1.6rem;
+      }
+
+      .logo {
+        font-size: 2.4rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, var(--accent), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .logo span {
+        font-weight: 300;
+        -webkit-text-fill-color: var(--t-muted);
+        background: none;
+      }
+
+      .theme-toggle {
+        display: flex;
+        gap: 0.6rem;
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 100px;
+        padding: 0.4rem;
+        border: var(--glass-border-w) solid var(--glass-border);
+        box-shadow: inset 0 1px 0 var(--glass-highlight);
+      }
+
+      .theme-toggle button {
+        background: transparent;
+        border: none;
+        border-radius: 100px;
+        padding: 0.6rem 1.6rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--t-muted);
+        transition: all 0.3s var(--_animbezier);
+        font-family: inherit;
+        letter-spacing: 0.01em;
+      }
+
+      .theme-toggle button.active {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(170, 112, 224, 0.3);
+      }
+
+      .theme-toggle button:not(.active):hover {
+        color: var(--t-bright);
+        background: var(--glass-inner);
+      }
+
+      /* ═══════════════════════════════════════════════
+               HERO CARD
+               ═══════════════════════════════════════════════ */
+      .hero {
+        padding: 4rem 3.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+        /* liquid gradient border effect */
+      }
+
+      .hero .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.4rem 1.2rem 0.4rem 0.8rem;
+        border-radius: 100px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: var(--glass-border-w) solid var(--glass-border);
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--t-medium);
+        width: fit-content;
+      }
+
+      .hero .badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #4ade80;
+        display: inline-block;
+        animation: pulseDot 2s ease-in-out infinite;
+      }
+
+      @keyframes pulseDot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(0.8);
+        }
+      }
+
+      .hero h1 {
+        font-size: clamp(3.2rem, 6vw, 5.6rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--t-bright);
+      }
+
+      .hero h1 .highlight {
+        background: linear-gradient(
+          135deg,
+          var(--accent),
+          var(--secondary),
+          var(--gradient-two)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        background-size: 200% 200%;
+        animation: liquidGrad 6s ease-in-out infinite alternate;
+      }
+
+      @keyframes liquidGrad {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .hero p {
+        font-size: 1.8rem;
+        color: var(--t-medium);
+        max-width: 48rem;
+        line-height: 1.6;
+      }
+
+      .hero .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.2rem;
+        margin-top: 0.8rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1.2rem 2.8rem;
+        border-radius: 100px;
+        font-weight: 600;
+        font-size: 1.5rem;
+        font-family: inherit;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s var(--_animbezier);
+        text-decoration: none;
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: var(--glass-border-w) solid var(--glass-border);
+        color: var(--t-bright);
+        box-shadow: inset 0 1px 0 var(--glass-highlight);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+        box-shadow: 0 4px 20px rgba(170, 112, 224, 0.25);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 32px rgba(170, 112, 224, 0.35);
+      }
+
+      .btn-ghost:hover {
+        background: var(--glass-inner);
+        transform: translateY(-2px);
+      }
+
+      /* ── hero visual ── */
+      .hero-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        min-height: 200px;
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--_radius-m);
+      }
+
+      .hero-visual .liquid-ring {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          var(--accent),
+          var(--secondary),
+          var(--gradient-two),
+          var(--accent)
+        );
+        animation: spinRing 12s linear infinite;
+        filter: blur(2px);
+        opacity: 0.6;
+        position: relative;
+      }
+
+      .hero-visual .liquid-ring::after {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border-radius: 50%;
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: var(--glass-border-w) solid var(--glass-border);
+      }
+
+      @keyframes spinRing {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(180deg) scale(1.08);
+        }
+        100% {
+          transform: rotate(360deg) scale(1);
+        }
+      }
+
+      /* ═══════════════════════════════════════════════
+               PROJECT CARDS
+               ═══════════════════════════════════════════════ */
+      .project {
+        padding: 2.8rem 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        transition: all 0.4s var(--_animbezier);
+        cursor: default;
+      }
+
+      .project .tag {
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--t-muted);
+      }
+
+      .project h3 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--t-bright);
+      }
+
+      .project p {
+        color: var(--t-medium);
+        font-size: 1.5rem;
+        line-height: 1.6;
+        flex: 1;
+      }
+
+      .project .meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.8rem;
+        padding-top: 1.2rem;
+        border-top: var(--glass-border-w) solid var(--glass-border);
+      }
+
+      .project .meta span {
+        font-size: 1.3rem;
+        color: var(--t-muted);
+      }
+
+      .project .meta .arrow {
+        font-size: 2rem;
+        transition: transform 0.3s var(--_animbezier);
+        color: var(--accent);
+      }
+
+      .project:hover .meta .arrow {
+        transform: translateX(6px) rotate(-8deg);
+      }
+
+      /* ── project with liquid bg accent ── */
+      .project-accent {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .project-accent::before {
+        content: "";
+        position: absolute;
+        top: -40%;
+        right: -20%;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: var(--accent);
+        filter: blur(70px);
+        opacity: 0.12;
+        pointer-events: none;
+        transition:
+          opacity 0.6s ease,
+          transform 0.8s var(--_animbezier);
+      }
+
+      .project-accent:hover::before {
+        opacity: 0.25;
+        transform: scale(1.3) translateX(-20px);
+      }
+
+      /* ── feature card (spans two cols on desktop) ── */
+      .feature {
+        padding: 3.6rem 3.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+      }
+
+      .feature h2 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .feature .stat-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2.4rem;
+        margin-top: 0.4rem;
+      }
+
+      .feature .stat {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .feature .stat .num {
+        font-size: 3.6rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+      }
+
+      .feature .stat .label {
+        font-size: 1.3rem;
+        color: var(--t-muted);
+        margin-top: 0.2rem;
+      }
+
+      /* ═══════════════════════════════════════════════
+               LIQUID GLASS — extra polish
+               ═══════════════════════════════════════════════ */
+
+      /* shimmer sweep on glass */
+      .glass-shimmer {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .glass-shimmer::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+          105deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.06) 50%,
+          transparent 60%
+        );
+        background-size: 200% 100%;
+        pointer-events: none;
+        animation: shimmerSweep 8s ease-in-out infinite;
+      }
+
+      @keyframes shimmerSweep {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* liquid hover ripple */
+      .glass-ripple {
+        transition: box-shadow 0.5s var(--_animbezier);
+      }
+
+      .glass-ripple:hover {
+        box-shadow:
+          0 8px 32px var(--glass-shadow),
+          0 0 0 1px var(--glass-border),
+          0 0 0 4px var(--secondary-rgba),
+          inset 0 1px 0 var(--glass-highlight);
+      }
+
+      /* ═══════════════════════════════════════════════
+               RESPONSIVE
+               ═══════════════════════════════════════════════ */
+      @media (max-width: 767px) {
+        body {
+          padding: 1.6rem;
+        }
+        .portfolio {
+          gap: 2rem;
+        }
+        .portfolio-header {
+          padding: 2rem 2rem;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 1.2rem;
+        }
+        .hero {
+          padding: 3rem 2.4rem;
+        }
+        .hero h1 {
+          font-size: 3rem;
+        }
+        .project {
+          padding: 2.4rem 2rem;
+        }
+        .feature {
+          padding: 2.8rem 2.4rem;
+        }
+        .feature .stat .num {
+          font-size: 2.8rem;
+        }
+        .hero-visual {
+          min-height: 140px;
+        }
+        .hero-visual .liquid-ring {
+          width: 120px;
+          height: 120px;
+        }
+        .theme-toggle button {
+          padding: 0.4rem 1.2rem;
+          font-size: 1.1rem;
+        }
+        .btn {
+          padding: 1rem 2rem;
+          font-size: 1.3rem;
+        }
+      }
+
+      @media (min-width: 768px) and (max-width: 1023px) {
+        .portfolio-feature {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════
+               UTILITY — smooth color transitions
+               ═══════════════════════════════════════════════ */
+      * {
+        transition:
+          background 0.4s ease,
+          color 0.3s ease,
+          border-color 0.3s ease,
+          box-shadow 0.4s ease;
+      }
+
+      /* ── scrollbar polish ── */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--t-muted);
+        border-radius: 10px;
+      }
+
+      /* ── selection ── */
+      ::selection {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      /* ── focus-visible accessibility ── */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="portfolio">
+      <!-- ═══ HEADER ═══ -->
+      <header class="portfolio-header glass glass-shimmer">
+        <div class="logo">✦ <span>Liquid</span>Glass</div>
+        <div class="theme-toggle" role="group" aria-label="Theme switcher">
+          <button class="active" data-theme="light" aria-pressed="true">
+            ☀️ Light
+          </button>
+          <button data-theme="dark" aria-pressed="false">🌙 Dark</button>
+        </div>
+      </header>
+
+      <!-- ═══ HERO ═══ -->
+      <section class="portfolio-feature">
+        <div class="hero glass glass-glow glass-ripple glass-shimmer">
+          <div class="badge">
+            <span class="dot"></span>
+            Available for work
+          </div>
+          <h1>
+            Crafting digital<br />
+            <span class="highlight">liquid experiences</span>
+          </h1>
+          <p>
+            iOS 26–inspired glass design with fluid motion, vibrant gradients,
+            and a touch of magic.
+          </p>
+          <div class="actions">
+            <a href="#" class="btn btn-primary">Explore work →</a>
+            <a href="#" class="btn btn-ghost">Get in touch</a>
+          </div>
+        </div>
+
+        <div class="hero-visual glass glass-glow">
+          <div class="liquid-ring"></div>
+        </div>
+      </section>
+
+      <!-- ═══ PROJECTS ═══ -->
+      <article class="project glass glass-ripple glass-shimmer project-accent">
+        <span class="tag">✦ UI/UX</span>
+        <h3>Nebula Dashboard</h3>
+        <p>
+          Real-time analytics with a glass interface that adapts to your brand.
+        </p>
+        <div class="meta">
+          <span>2026 · Design system</span>
+          <span class="arrow">→</span>
+        </div>
+      </article>
+
+      <article class="project glass glass-ripple glass-shimmer project-accent">
+        <span class="tag">✦ Development</span>
+        <h3>Glass Kit Pro</h3>
+        <p>Component library for building liquid glass UIs with ease.</p>
+        <div class="meta">
+          <span>2026 · Open source</span>
+          <span class="arrow">→</span>
+        </div>
+      </article>
+
+      <!-- ═══ FEATURE CARD (spans full width) ═══ -->
+      <div
+        class="feature glass glass-glow glass-ripple glass-shimmer"
+        style="grid-column: 1/-1"
+      >
+        <h2>Built for the future of UI</h2>
+        <p style="font-size: 1.6rem; color: var(--t-medium); max-width: 60rem">
+          Every interaction feels fluid. Every surface breathes with depth. This
+          is the next generation of glass — liquid, responsive, alive.
+        </p>
+        <div class="stat-row">
+          <div class="stat">
+            <span class="num">99%</span>
+            <span class="label">Smoothness score</span>
+          </div>
+          <div class="stat">
+            <span class="num">12ms</span>
+            <span class="label">Interaction latency</span>
+          </div>
+          <div class="stat">
+            <span class="num">∞</span>
+            <span class="label">Creative possibilities</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MORE PROJECTS ═══ -->
+      <article class="project glass glass-ripple glass-shimmer project-accent">
+        <span class="tag">✦ Brand</span>
+        <h3>Liquid Identity</h3>
+        <p>Visual identity system that flows across light &amp; dark modes.</p>
+        <div class="meta">
+          <span>2025 · Branding</span>
+          <span class="arrow">→</span>
+        </div>
+      </article>
+
+      <article class="project glass glass-ripple glass-shimmer project-accent">
+        <span class="tag">✦ Motion</span>
+        <h3>Fluid Transitions</h3>
+        <p>Micro-interactions that feel natural, responsive, and delightful.</p>
+        <div class="meta">
+          <span>2025 · Animation</span>
+          <span class="arrow">→</span>
+        </div>
+      </article>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+    SCRIPT — theme toggle + liquid enhancements
+    ═══════════════════════════════════════════════ -->
+    <script>
+      (function () {
+        "use strict";
+
+        const toggleBtns = document.querySelectorAll(".theme-toggle button");
+        const root = document.documentElement;
+
+        // ── get stored or system preference ──
+        function getPreferredTheme() {
+          const stored = localStorage.getItem("liquid-glass-theme");
+          if (stored === "light" || stored === "dark") return stored;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+
+        function setTheme(theme) {
+          // remove both attributes then set the active one
+          root.removeAttribute("color-scheme");
+          if (theme === "light" || theme === "dark") {
+            root.setAttribute("color-scheme", theme);
+          }
+          // update buttons
+          toggleBtns.forEach((btn) => {
+            const isActive = btn.dataset.theme === theme;
+            btn.classList.toggle("active", isActive);
+            btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+          });
+          localStorage.setItem("liquid-glass-theme", theme);
+        }
+
+        // ── init ──
+        const initial = getPreferredTheme();
+        setTheme(initial);
+
+        // ── click handlers ──
+        toggleBtns.forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            const theme = this.dataset.theme;
+            if (theme === "light" || theme === "dark") {
+              setTheme(theme);
+            }
+          });
+        });
+
+        // ── listen to system changes (optional) ──
+        const media = window.matchMedia("(prefers-color-scheme: dark)");
+        media.addEventListener("change", function (e) {
+          // only change if user hasn't manually set a preference
+          if (!localStorage.getItem("liquid-glass-theme")) {
+            const newTheme = e.matches ? "dark" : "light";
+            setTheme(newTheme);
+          }
+        });
+
+        // ── small polish: add a tiny liquid shimmer on load ──
+        document.querySelectorAll(".glass-shimmer").forEach((el) => {
+          el.style.animation = "none";
+          requestAnimationFrame(() => {
+            el.style.animation = "";
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

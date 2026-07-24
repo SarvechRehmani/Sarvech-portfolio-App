@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Project Detail - Sarvech Personal Portfolio</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+
+    <!-- Template Styles -->
+    <link rel="stylesheet" href="./css/loaders/loader.css" />
+    <link rel="stylesheet" type="text/css" href="./css/plugins.css" />
+    <link rel="stylesheet" type="text/css" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/project.css" />
+
+    <!-- Custom Browser Color -->
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#dcdce7"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#111111"
+    />
+    <meta name="msapplication-navbutton-color" content="#111111" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+  </head>
+  <body>
+    <!-- ===== LOADER ===== -->
+    <div id="loader" class="loader">
+      <div id="loaderContent" class="loader__content">
+        <div class="loader__shadow"></div>
+        <div class="loader__box"></div>
+      </div>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <my-header></my-header>
+
+    <!-- ===== GRADIENT BACKGROUND ===== -->
+    <div class="gradient-background">
+      <div class="blur"></div>
+      <div class="blur"></div>
+      <div class="blur"></div>
+    </div>
+
+    <!-- ===== AVATAR SIDE BLOCK ===== -->
+    <my-avatar></my-avatar>
+
+    <!-- ===== PAGE CONTENT ===== -->
+    <div id="content" class="content">
+      <div class="content__wrapper">
+        <!-- ===== THEMED CAROUSEL ===== -->
+        <div class="carousel-main-container d-flex justify-content-center">
+          <div class="carousel-container">
+            <div class="carousel" id="projectCarousel">
+              <div class="slides" id="carouselSlides">
+                <!-- injected by JS -->
+              </div>
+              <div class="back-drop"></div>
+              <button class="carousel-btn prev" id="carouselPrev">❮</button>
+              <button class="carousel-btn next" id="carouselNext">❯</button>
+              <div class="carousel-dots" id="carouselDots">
+                <!-- injected by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== DETAILS ===== -->
+        <div class="container mt-4">
+          <div class="content__block section-grid-title">
+            <p class="h2__subtitle animate-in-up">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="13px"
+                height="13px"
+                viewBox="0 0 13 13"
+                fill="currentColor"
+              >
+                <path
+                  fill="currentColor"
+                  d="M5.6,12.6c-0.5-0.8-0.7-2.4-1.7-3.5c-1-1-2.7-1.2-3.5-1.7C-0.1,7-0.1,6,0.4,5.6c0.8-0.5,2.3-0.6,3.5-1.8C5,2.8,5.1,1.2,5.6,0.4C6-0.1,7-0.1,7.4,0.4c0.5,0.8,0.7,2.4,1.8,3.5c1.2,1.2,2.6,1.2,3.5,1.7c0.6,0.4,0.6,1.4,0,1.7C11.8,7.9,10.2,8,9.1,9.1c-1,1-1.2,2.7-1.7,3.5C7,13.1,6,13.1,5.6,12.6z"
+                />
+              </svg>
+              <span>Details</span>
+            </p>
+            <p class="h2__subtitle animate-in-up" id="projectDate">
+              <i class="far fa-calendar-alt"></i>
+              <span></span>
+            </p>
+          </div>
+
+          <div class="resume-lines">
+            <div class="container main-content">
+              <div class="content-section">
+                <h2 id="projectTitle">Project Title</h2>
+              </div>
+              <div class="content-grid">
+                <!-- Main Column -->
+                <div class="main-column">
+                  <section class="content-section">
+                    <h2>Project Summary</h2>
+                    <div class="project-description" id="projectSummary">
+                      <p></p>
+                    </div>
+                  </section>
+
+                  <section class="content-section">
+                    <h2>Description</h2>
+                    <ul class="project-features" id="projectFeatures">
+                      <!-- injected by JS -->
+                    </ul>
+                  </section>
+
+                  <section
+                    class="content-section"
+                    id="projectExtraFeaturesSection"
+                    style="display: none"
+                  >
+                    <h2>Project Features</h2>
+                    <ul class="project-features" id="projectExtraFeatures">
+                      <!-- injected by JS -->
+                    </ul>
+                  </section>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar-project">
+                  <div class="info-card">
+                    <h3>Project Details</h3>
+                    <div class="info-list" id="projectDetails">
+                      <!-- injected by JS -->
+                    </div>
+                  </div>
+
+                  <div class="info-card last-card">
+                    <h3>Project Links</h3>
+                    <div class="info-list" id="projectLinks">
+                      <!-- injected by JS -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { projectsData } from "./components/models/Data.js";
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      //  MAIN CAROUSEL CONTROLLER – vanilla JS, no external deps
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      (function () {
+        // ── Wait for DOM ready ──
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+
+        function init() {
+          // 1) Read project ID and data
+          const params = new URLSearchParams(window.location.search);
+          const projectId = (params.get("id") || "codeventure").toLowerCase();
+          const project = projectsData[projectId];
+
+          // Ensure projectsData is defined (from projects.js)
+          if (typeof projectsData === "undefined") {
+            console.error("projectsData is not defined. Check projects.js");
+            return;
+          }
+
+          if (!project) {
+            document.querySelector(".main-content").innerHTML =
+              "<h2>Project not found</h2><p>Please check the URL or go back to the portfolio.</p>";
+            return;
+          }
+
+          // 2) Render all content
+          renderProject(project);
+
+          // 3) Initialize carousel after images load
+          const slidesContainer = document.getElementById("carouselSlides");
+          if (!slidesContainer) return;
+
+          const slides = slidesContainer.querySelectorAll(".slide");
+          if (slides.length <= 1) {
+            // Hide controls if single slide
+            document.getElementById("carouselPrev").style.display = "none";
+            document.getElementById("carouselNext").style.display = "none";
+            return;
+          }
+
+          // Wait for images to load
+          const images = slidesContainer.querySelectorAll("img");
+          if (images.length === 0) {
+            startCarousel(slidesContainer);
+          } else {
+            let loaded = 0;
+            const total = images.length;
+            images.forEach((img) => {
+              if (img.complete) {
+                loaded++;
+                if (loaded === total) startCarousel(slidesContainer);
+              } else {
+                img.addEventListener("load", () => {
+                  loaded++;
+                  if (loaded === total) startCarousel(slidesContainer);
+                });
+                img.addEventListener("error", () => {
+                  loaded++;
+                  if (loaded === total) startCarousel(slidesContainer);
+                });
+              }
+            });
+            // Fallback: if images don't load within 2s, start anyway
+            setTimeout(() => startCarousel(slidesContainer), 2000);
+          }
+        }
+
+        // ── Render project data ──
+        function renderProject(project) {
+          // Carousel slides
+          const slidesContainer = document.getElementById("carouselSlides");
+          const dotsContainer = document.getElementById("carouselDots");
+          const isComingSoon = project.comingSoon === true;
+
+          if (isComingSoon || !project.images || project.images.length === 0) {
+            slidesContainer.innerHTML = `
+                              <div class="coming-soon-placeholder" style="width:100%; flex:0 0 100%;">
+                                  <div>
+                                      <h2>🚀 Coming Soon</h2>
+                                      <p>This project is currently being updated. Check back later!</p>
+                                  </div>
+                              </div>
+                          `;
+            dotsContainer.innerHTML = "";
+            document.getElementById("carouselPrev").style.display = "none";
+            document.getElementById("carouselNext").style.display = "none";
+          } else {
+            let slidesHtml = "";
+            project.images.forEach((img, idx) => {
+              const label = idx === 0 ? "Home Page" : "Screenshot " + (idx + 1);
+              slidesHtml += `
+                                  <div class="slide">
+                                      <img src="${img}" alt="${project.title} - ${label}" loading="lazy" />
+                                      <div class="slide-content">
+                                          <h2>${label}</h2>
+                                      </div>
+                                  </div>
+                              `;
+            });
+            slidesContainer.innerHTML = slidesHtml;
+
+            let dotsHtml = "";
+            project.images.forEach((_, idx) => {
+              dotsHtml += `<button class="dot ${idx === 0 ? "active" : ""}" data-index="${idx}"></button>`;
+            });
+            dotsContainer.innerHTML = dotsHtml;
+          }
+
+          // Other fields
+          document.querySelector("#projectDate span").textContent =
+            project.date || "";
+          document.getElementById("projectTitle").textContent =
+            project.title || "Project";
+          document.querySelector("#projectSummary p").innerHTML =
+            project.summary || "";
+
+          const featuresUl = document.getElementById("projectFeatures");
+          if (featuresUl) {
+            if (project.features && project.features.length) {
+              featuresUl.innerHTML = project.features
+                .map((f) => `<li>${f}</li>`)
+                .join("");
+            } else {
+              featuresUl.innerHTML = "<li>No features listed.</li>";
+            }
+          }
+
+          const extraSection = document.getElementById(
+            "projectExtraFeaturesSection",
+          );
+          const extraUl = document.getElementById("projectExtraFeatures");
+          if (project.extraFeatures && project.extraFeatures.length) {
+            extraSection.style.display = "block";
+            extraUl.innerHTML = project.extraFeatures
+              .map((f) => `<li>${f}</li>`)
+              .join("");
+          } else {
+            extraSection.style.display = "none";
+          }
+
+          const detailsContainer = document.getElementById("projectDetails");
+          if (detailsContainer) {
+            detailsContainer.innerHTML = `
+                              <div class="info-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                      <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                      <line x1="16" x2="16" y1="2" y2="6"/>
+                                      <line x1="8" x2="8" y1="2" y2="6"/>
+                                      <line x1="3" x2="21" y1="10" y2="10"/>
+                                  </svg>
+                                  <span>${project.date || "N/A"}</span>
+                              </div>
+                              <div class="info-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                      <circle cx="12" cy="7" r="4"/>
+                                  </svg>
+                                  <span>Client Name: ${project.client || "N/A"}</span>
+                              </div>
+                              <div class="info-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                                      <polyline points="14 2 14 8 20 8"/>
+                                  </svg>
+                                  <span>Project Status: ${project.status || "N/A"}</span>
+                              </div>
+                          `;
+          }
+
+          const linksContainer = document.getElementById("projectLinks");
+          if (linksContainer) {
+            let linksHtml = "";
+            if (project.links.github) {
+              const label = project.links.github2
+                ? "Backend Source Code"
+                : "View Source Code";
+              linksHtml += `
+                                  <a href="${project.links.github}" class="info-item link" target="_blank" rel="noopener noreferrer">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                                          <path d="M9 18c-4.51 2-5-2-7-2"/>
+                                      </svg>
+                                      <span>${label}</span>
+                                  </a>
+                              `;
+            }
+            if (project.links.github2) {
+              linksHtml += `
+                                  <a href="${project.links.github2}" class="info-item link" target="_blank" rel="noopener noreferrer">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                                          <path d="M9 18c-4.51 2-5-2-7-2"/>
+                                      </svg>
+                                      <span>Frontend Source Code</span>
+                                  </a>
+                              `;
+            }
+            if (project.links.live) {
+              linksHtml += `
+                                  <a href="${project.links.live}" class="info-item link" target="_blank" rel="noopener noreferrer">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                          <circle cx="12" cy="12" r="10"/>
+                                          <line x1="2" x2="22" y1="12" y2="12"/>
+                                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                      </svg>
+                                      <span>Visit Live Site</span>
+                                  </a>
+                              `;
+            } else {
+              linksHtml += `
+                                  <a href="#" class="info-item link disabled" rel="noopener noreferrer">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                          <circle cx="12" cy="12" r="10"/>
+                                          <line x1="2" x2="22" y1="12" y2="12"/>
+                                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                      </svg>
+                                      <span>Visit Live Site</span>
+                                  </a>
+                              `;
+            }
+            linksContainer.innerHTML = linksHtml;
+          }
+
+          document.title = project.title + " - Sarvech Personal Portfolio";
+        }
+
+        // ── Carousel engine
+        function startCarousel(slidesContainer) {
+          const slides = slidesContainer.querySelectorAll(".slide");
+          const dots = document.querySelectorAll("#carouselDots .dot");
+          const prevBtn = document.getElementById("carouselPrev");
+          const nextBtn = document.getElementById("carouselNext");
+
+          if (slides.length <= 1) {
+            if (prevBtn) prevBtn.style.display = "none";
+            if (nextBtn) nextBtn.style.display = "none";
+            return;
+          }
+
+          let current = 0;
+          let isAnimating = false;
+          let autoTimer = null;
+
+          function goTo(index) {
+            if (isAnimating) return;
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+            if (index === current) return;
+
+            isAnimating = true;
+            current = index;
+            const offset = -current * 100;
+            slidesContainer.style.transform = "translateX(" + offset + "%)";
+
+            dots.forEach((dot, i) => {
+              dot.classList.toggle("active", i === current);
+            });
+
+            const onEnd = () => {
+              isAnimating = false;
+              slidesContainer.removeEventListener("transitionend", onEnd);
+            };
+            slidesContainer.addEventListener("transitionend", onEnd);
+            // Safety unlock
+            setTimeout(() => {
+              isAnimating = false;
+            }, 700);
+          }
+
+          function next() {
+            goTo(current + 1);
+          }
+          function prev() {
+            goTo(current - 1);
+          }
+
+          // Auto-slide
+          function startAuto() {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(next, 4000);
+          }
+          function stopAuto() {
+            if (autoTimer) {
+              clearInterval(autoTimer);
+              autoTimer = null;
+            }
+          }
+
+          // Event listeners
+          prevBtn.addEventListener("click", prev);
+          nextBtn.addEventListener("click", next);
+
+          dots.forEach((dot) => {
+            dot.addEventListener("click", function () {
+              const index = parseInt(this.dataset.index);
+              goTo(index);
+            });
+          });
+
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft") prev();
+            if (e.key === "ArrowRight") next();
+          });
+
+          // Touch
+          let touchStartX = 0;
+          let isSwiping = false;
+          const carouselEl = document.getElementById("projectCarousel");
+          carouselEl.addEventListener("touchstart", (e) => {
+            touchStartX = e.touches[0].clientX;
+            isSwiping = true;
+          });
+          carouselEl.addEventListener("touchend", (e) => {
+            if (!isSwiping) return;
+            isSwiping = false;
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) {
+              diff > 0 ? next() : prev();
+            }
+          });
+
+          // Pause on hover
+          carouselEl.addEventListener("mouseenter", stopAuto);
+          carouselEl.addEventListener("mouseleave", startAuto);
+
+          // Initialize
+          slidesContainer.style.transform = "translateX(0)";
+          dots.forEach((d, i) => d.classList.toggle("active", i === 0));
+          current = 0;
+          startAuto();
+        }
+      })();
+    </script>
+    <!-- ===== SCRIPTS ===== -->
+    <script src="../js/libs.min.js"></script>
+    <script src="./js/background.js"></script>
+    <script src="./js/app.js"></script>
+    <!-- components -->
+    <script type="module" src="./components/header.js"></script>
+    <script type="module" src="./components/avatar.js"></script>
+  </body>
+</html>

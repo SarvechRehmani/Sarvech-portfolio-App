@@ -127,6 +127,7 @@
 
   --overlay-certificate-dark: rgba(37, 37, 37, 0.483);
 }
+
 @media only screen and (min-width: 1600px) {
   :root {
     --_radius-s: 1.7rem;

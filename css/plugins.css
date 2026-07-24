@@ -63428,7 +63428,7 @@ button.swiper-pagination-bullet {
 }
 
 :root {
-  /*
+  
   --swiper-scrollbar-border-radius: 10px;
   --swiper-scrollbar-top: auto;
   --swiper-scrollbar-bottom: 4px;
@@ -63438,7 +63438,7 @@ button.swiper-pagination-bullet {
   --swiper-scrollbar-bg-color: rgba(0, 0, 0, 0.1);
   --swiper-scrollbar-drag-bg-color: rgba(0, 0, 0, 0.5);
   --swiper-scrollbar-size: 4px;
-  */
+  
 }
 
 .swiper-scrollbar {
@@ -63740,6 +63740,8 @@ button.swiper-pagination-bullet {
 /* ------------------------------------------------*/
 /*! PhotoSwipe main CSS by Dmitry Semenov | photoswipe.com | MIT license */
 /*
+
+
 	Styles for basic PhotoSwipe functionality (sliding area, open/close transitions)
 */
 /* pswp = photoswipe */
