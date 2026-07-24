@@ -22,7 +22,7 @@ class MyPortfolio extends HTMLElement {
                                          alt="${p.title}" />
                                 </a>
                                 <figcaption class="gallery__descr" itemprop="caption description">
-                                    <a href="/project.html?id=${key}">
+                                    <a href="/project.html?id=${key}" aria-label="View details for ${p.title}">
                                         <h5>${p.title}</h5>
                                     </a>
                                     <div class="card__tags d-flex flex-wrap">

@@ -13,21 +13,70 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
 
+    <!-- CSS -->
+    <!-- <link
+      rel="preload"
+      href="css/icons.css"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    /> -->
+
+    <!-- <noscript> -->
+    <link rel="stylesheet" href="css/icons.css" />
+    <!-- </noscript> -->
+
+    <!-- <link
+      rel="preload"
+      href="css/swiper.css"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    /> -->
+
+    <!-- <noscript> -->
+    <link rel="stylesheet" href="css/swiper.css" />
+    <!-- </noscript> -->
+
+    <!-- <link
+      rel="preload"
+      href="css/photoswipe.css"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    /> -->
+
+    <!-- <noscript> -->
+    <link rel="stylesheet" href="css/photoswipe.css" />
+    <!-- </noscript> -->
+    <!-- 
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
+      rel="preload"
+      href="css/skill.css"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    /> -->
+
+    <!-- <noscript> -->
+    <link rel="stylesheet" href="css/skill.css" />
+    <!-- </noscript> -->
 
     <!-- Template Styles Start -->
+    <link rel="stylesheet" href="css/bootstrap.css" />
     <link rel="stylesheet" href="css/loaders/loader.css" />
-    <link rel="stylesheet" type="text/css" href="css/plugins.css" />
     <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" type="text/css" href="css/skill.css" />
     <!-- Template Styles End -->
 
     <!-- Custom Browser Color Start -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-
     <meta name="mobile-web-app-capable" content="yes" />
     <meta
       name="theme-color"
@@ -79,7 +128,7 @@
       {
         "@context": "https://schema.org",
         "@type": "Person",
-        "name": "Sarvech Rehmani,
+        "name": "Sarvech Rehmani",
         "jobTitle": "Full-Stack Developer",
         "url": "https://sarvech.netlify.app",
         "sameAs": [
@@ -182,7 +231,11 @@
 
           <!-- Scroll Button Start -->
           <div class="rotating-btn">
-            <a href="#portfolio" class="rotating-btn__link slide-down">
+            <a
+              href="#portfolio"
+              class="rotating-btn__link slide-down"
+              aria-label="Scroll down to portfolio section"
+            >
               <!-- SVG rotating text -->
               <svg
                 version="1.1"
@@ -336,23 +389,24 @@
     <pswp-connfig></pswp-connfig>
 
     <!-- Load Scripts Start -->
-    <script src="js/libs.min.js"></script>
-    <script src="js/typed.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/skills-slides.js"></script>
-    <script src="./js/background.js"></script>
-    <script src="js/gallery-init.js"></script>
+    <script defer src="js/libs.min.js"></script>
+    <script defer src="js/typed.js"></script>
+    <script defer src="js/skills-slides.js"></script>
+    <script defer src="./js/background.js"></script>
+    <script defer src="js/gallery-init.js"></script>
+    <script defer src="js/app.js"></script>
     <script>
       // --------------------------------------------- //
       // Typing Text Start                             //
       // --------------------------------------------- //
-      new Typed("#typedText", {
-        strings: ["Java Developer", "Spring Boot Dev", "Angular Developer"],
-        // strings: designations,
-        typeSpeed: 100,
-        backSpeed: 50,
-        smartBackspace: true,
-        loop: true,
+      document.addEventListener("DOMContentLoaded", () => {
+        new Typed("#typedText", {
+          strings: ["Java Developer", "Spring Boot Dev", "Angular Developer"],
+          typeSpeed: 100,
+          backSpeed: 50,
+          smartBackspace: true,
+          loop: true,
+        });
       });
     </script>
     <!-- Load Components -->

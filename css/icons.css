@@ -1,0 +1,568 @@
+
+
+
+
+@font-face {
+  font-family: "Phosphor";
+  src:
+    url("../fonts/Phosphor/Phosphor.woff2") format("woff2"),
+    url("../fonts/Phosphor/Phosphor.woff") format("woff"),
+    url("../fonts/Phosphor/Phosphor.ttf") format("truetype"),
+    url("../fonts/Phosphor/Phosphor.svg#Phosphor") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.ph {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "Phosphor" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ph.ph-house-simple:before {
+  content: "\eb9e";
+}
+.ph.ph-user:before {
+  content: "\eda0";
+}
+.ph-thin.ph-user:before {
+  content: "\edaf";
+}
+.ph.ph-article:before {
+  content: "\e984";
+}
+.ph.ph-squares-four:before {
+  content: "\ed20";
+}
+.ph.ph-envelope:before {
+  content: "\eac5";
+}
+.ph.ph-facebook-logo:before {
+  content: "\ead8";
+}
+.ph.ph-github-logo:before {
+  content: "\eb53";
+}
+.ph.ph-at:before {
+  content: "\e989";
+}
+.ph.ph-sun:before {
+  content: "\ed3e";
+}
+.ph.ph-moon-stars:before {
+  content: "\ebff";
+}
+.ph.ph-chat-dots:before {
+  content: "\ea28";
+}
+.ph.ph-instagram-logo:before {
+  content: "\eba8";
+}
+.ph.ph-download-simple:before {
+  content: "\eab6";
+}
+
+.ph.ph-linkedin-logo:before {
+  content: "\ebc4";
+}
+.ph.ph-arrow-down:before {
+  content: "\e93a";
+}
+
+@font-face {
+  font-family: "Phosphor-Light";
+  src:
+    url("../fonts/Phosphor/Phosphor-Light.woff2") format("woff2"),
+    url("../fonts/Phosphor/Phosphor-Light.woff") format("woff"),
+    url("../fonts/Phosphor/Phosphor-Light.ttf") format("truetype"),
+    url("../fonts/Phosphor/Phosphor-Light.svg#Phosphor-Light") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.ph-light {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "Phosphor-Light" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ph-light.ph-sun:before {
+  content: "\ed41";
+}
+.ph-light.ph-moon-stars:before {
+  content: "\ebff";
+}
+.ph-light.ph-chat-dots:before {
+  content: "\ea27";
+}
+.ph-light.ph-instagram-logo:before {
+  content: "\eba8";
+}
+.ph-light.ph-at:before {
+  content: "\e989";
+}
+.ph-light.ph-house-simple:before {
+  content: "\eb9e";
+}
+.ph-light.ph-user:before {
+  content: "\eda6";
+}
+.ph-light.ph-article:before {
+  content: "\e984";
+}
+.ph-light.ph-squares-four:before {
+  content: "\ed20";
+}
+.ph-light.ph-envelope:before {
+  content: "\eac5";
+}
+.ph-light.ph-github-logo:before {
+  content: "\eb53";
+}
+.ph-light.ph-facebook-logo:before {
+  content: "\ead8";
+}
+
+.ph-light.ph-download-simple:before {
+  content: "\eab6";
+}
+
+.ph-light.ph-linkedin-logo:before {
+  content: "\ebc3";
+}
+
+.ph-light.ph-arrow-down:before {
+  content: "\e93b";
+}
+
+@font-face {
+  font-family: "Phosphor-Thin";
+  src:
+    url("../fonts/Phosphor/Phosphor-Thin.woff2") format("woff2"),
+    url("../fonts/Phosphor/Phosphor-Thin.woff") format("woff"),
+    url("../fonts/Phosphor/Phosphor-Thin.ttf") format("truetype"),
+    url("../fonts/Phosphor/Phosphor-Thin.svg#Phosphor-Thin") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.ph-thin {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "Phosphor-Thin" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ph-thin.ph-sun:before {
+  content: "\ed41";
+}
+.ph-thin.ph-moon-stars:before {
+  content: "\ebfe";
+}
+.ph-thin.ph-chat-dots:before {
+  content: "\ea27";
+}
+.ph-thin.ph-instagram-logo:before {
+  content: "\eba8";
+}
+.ph-thin.ph-at:before {
+  content: "\e98a";
+}
+.ph-thin.ph-house-simple:before {
+  content: "\eb9d";
+}
+.ph-thin.ph-article:before {
+  content: "\e986";
+}
+.ph-thin.ph-squares-four:before {
+  content: "\ed1f";
+}
+.ph-thin.ph-envelope:before {
+  content: "\eac8";
+}
+.ph-thin.ph-facebook-logo:before {
+  content: "\ead8";
+}
+.ph-thin.ph-github-logo:before {
+  content: "\eb53";
+}
+
+.ph-thin.ph-download-simple:before {
+  content: "\eab5";
+}
+
+
+.ph-thin.ph-arrow-down:before {
+  content: "\e93c";
+}
+
+.ph-thin.ph-linkedin-logo:before {
+  content: "\ebc3";
+}
+
+@font-face {
+  font-family: "Phosphor-Bold";
+  src:
+    url("../fonts/Phosphor/Phosphor-Bold.woff2") format("woff2"),
+    url("../fonts/Phosphor/Phosphor-Bold.woff") format("woff"),
+    url("../fonts/Phosphor/Phosphor-Bold.ttf") format("truetype"),
+    url("../fonts/Phosphor/Phosphor-Bold.svg#Phosphor-Bold") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.ph-bold {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "Phosphor-Bold" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ph-bold.ph-sun:before {
+  content: "\ed3e";
+}
+
+.ph-bold.ph-moon-stars:before {
+  content: "\ebff";
+}
+.ph-bold.ph-linkedin-logo:before {
+  content: "\ebc4";
+}
+.ph-bold.ph-article:before {
+  content: "\e984";
+}
+
+.ph-bold.ph-chat-dots:before {
+  content: "\ea28";
+}
+
+.ph-bold.ph-instagram-logo:before {
+  content: "\eba8";
+}
+
+.ph-bold.ph-at:before {
+  content: "\e989";
+}
+
+.ph-bold.ph-house-simple:before {
+  content: "\eb9e";
+}
+
+.ph-bold.ph-user:before {
+  content: "\eda0";
+}
+.ph-bold.ph-squares-four:before {
+  content: "\ed20";
+}
+
+.ph-bold.ph-envelope:before {
+  content: "\eac5";
+}
+
+.ph-bold.ph-facebook-logo:before {
+  content: "\ead8";
+}
+
+.ph-bold.ph-github-logo:before {
+  content: "\eb53";
+}
+
+.ph-bold.ph-download-simple:before {
+  content: "\eab6";
+}
+
+.ph-bold.ph-arrow-down:before {
+  content: "\e93a";
+}
+
+
+@font-face {
+  font-family: "Phosphor-Fill";
+  src:
+    url("../fonts/Phosphor/Phosphor-Fill.woff2") format("woff2"),
+    url("../fonts/Phosphor/Phosphor-Fill.woff") format("woff"),
+    url("../fonts/Phosphor/Phosphor-Fill.ttf") format("truetype"),
+    url("../fonts/Phosphor/Phosphor-Fill.svg#Phosphor-Fill") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.ph-fill {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "Phosphor-Fill" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ph-fill.ph-sun:before {
+  content: "\ed3f";
+}
+.ph-fill.ph-moon-stars:before {
+  content: "\ebff";
+}
+.ph-fill.ph-chat-dots:before {
+  content: "\ea27";
+}
+
+.ph-fill.ph-instagram-logo:before {
+  content: "\eba8";
+}
+
+.ph-fill.ph-house-simple:before {
+  content: "\eb9e";
+}
+.ph-fill.ph-user:before {
+  content: "\eda4";
+}
+
+.ph-fill.ph-envelope:before {
+  content: "\eac5";
+}
+
+.ph-fill.ph-facebook-logo:before {
+  content: "\ead8";
+}
+
+
+.ph-fill.ph-github-logo:before {
+  content: "\eb53";
+}
+
+.ph-fill.ph-at:before {
+  content: "\e989";
+}
+
+.ph-fill.ph-squares-four:before {
+  content: "\ed20";
+}
+
+.ph-fill.ph-article:before {
+  content: "\e984";
+}
+
+
+.ph-fill.ph-download-simple:before {
+  content: "\eab6";
+}
+
+.ph-fill.ph-arrow-down:before {
+  content: "\e93a";
+}
+
+
+@font-face {
+  font-family: "Phosphor-Duotone";
+  src:
+    url("../fonts/Phosphor/Phosphor-Duotone.woff2") format("woff2"),
+    url("../fonts/Phosphor/Phosphor-Duotone.woff") format("woff"),
+    url("../fonts/Phosphor/Phosphor-Duotone.ttf") format("truetype"),
+    url("../fonts/Phosphor/Phosphor-Duotone.svg#Phosphor-Duotone") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.ph-duotone {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "Phosphor-Duotone" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.ph-duotone.ph-sun:before {
+  content: "\f17d";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-sun:after {
+  content: "\f17e";
+  margin-left: -1em;
+}
+
+.ph-duotone.ph-moon-stars:before {
+  content: "\eefd";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-moon-stars:after {
+  content: "\eefe";
+  margin-left: -1em;
+}
+.ph-duotone.ph-chat-dots:before {
+  content: "\eb4d";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-chat-dots:after {
+  content: "\eb4e";
+  margin-left: -1em;
+}
+
+.ph-duotone.ph-instagram-logo:before {
+  content: "\ee4f";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-instagram-logo:after {
+  content: "\ee50";
+  margin-left: -1em;
+}
+
+
+.ph-duotone.ph-house-simple:before {
+  content: "\ee3b";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-house-simple:after {
+  content: "\ee3c";
+  margin-left: -1em;
+}
+
+
+.ph-duotone.ph-user:before {
+  content: "\f247";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-user:after {
+  content: "\f248";
+  margin-left: -1em;
+}
+
+
+.ph-duotone.ph-article:before {
+  content: "\ea08";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-article:after {
+  content: "\ea09";
+  margin-left: -1em;
+}
+
+.ph-duotone.ph-squares-four:before {
+  content: "\f13f";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-squares-four:after {
+  content: "\f140";
+  margin-left: -1em;
+}
+
+.ph-duotone.ph-envelope:before {
+  content: "\ec89";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-envelope:after {
+  content: "\ec8a";
+  margin-left: -1em;
+}
+
+
+.ph-duotone.ph-github-logo:before {
+  content: "\eda5";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-github-logo:after {
+  content: "\eda6";
+  margin-left: -1em;
+}
+
+
+.ph-duotone.ph-facebook-logo:before {
+  content: "\ecaf";
+  opacity: 0.2;
+}
+.ph-duotone.ph-facebook-logo:after {
+  content: "\ecb0";
+  margin-left: -1em;
+}
+
+
+.ph-duotone.ph-at:before {
+  content: "\ea12";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-at:after {
+  content: "\ea13";
+  margin-left: -1em;
+}
+
+
+.ph-duotone.ph-download-simple:before {
+  content: "\ec6b";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-download-simple:after {
+  content: "\ec6c";
+  margin-left: -1em;
+}
+
+.ph-duotone.ph-arrow-down:before {
+  content: "\e974";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-arrow-down:after {
+  content: "\e975";
+  margin-left: -1em;
+}
+.ph-duotone.ph-linkedin-logo:before {
+  content: "\ee87";
+  opacity: 0.2;
+}
+
+.ph-duotone.ph-linkedin-logo:after {
+  content: "\ee88";
+  margin-left: -1em;
+}

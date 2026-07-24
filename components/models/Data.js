@@ -20,27 +20,27 @@ const personalData = {
   // ---- social links ----
   socials: [
     {
-      icon: "fa-brands fa-github",
+      icon: "ph-duotone  ph-github-logo",
       url: "https://github.com/SarvechRehmani",
       title: "Github",
     },
     {
-      icon: "fa-brands fa-threads",
+      icon: "ph-duotone ph-at",
       url: "https://www.threads.com/@sarvech_rehmani",
       title: "Threads",
     },
     {
-      icon: "fa-brands fa-instagram",
+      icon: "ph-duotone  ph-instagram-logo",
       url: "https://www.instagram.com/sarvech_rehmani",
       title: "Instagram",
     },
     {
-      icon: "fa-brands fa-facebook",
+      icon: "ph-duotone  ph-facebook-logo",
       url: "https://www.facebook.com/SarvechRehmani",
       title: "Facebook",
     },
     {
-      icon: "fa-brands fa-linkedin",
+      icon: "ph-duotone ph-linkedin-logo",
       url: "https://www.linkedin.com/in/sarvech-rehmani",
       title: "LinkedIn",
     },
