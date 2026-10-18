@@ -1,6 +1,9 @@
 [build]
-command = "npm ci && npm run build"
+command = "npm ci --include=dev && npm run build"
 publish = "dist/portfolio/browser"
+
+[build.environment]
+NODE_VERSION = "22"
 
 [[edge_functions]]
 function = "seo"
@@ -15,3 +18,4 @@ X-Robots-Tag = "noindex, nofollow"
 for = "/config.json"
 [headers.values]
 Cache-Control = "no-store"
+
