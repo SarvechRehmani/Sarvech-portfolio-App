@@ -1,6 +1,0 @@
-[functions.portfolio-mail]
-# The database dispatcher attaches the existing public legacy anon JWT. Keep gateway verification ON.
-verify_jwt = true
-[functions.portfolio-auth-mail]
-# Auth supplies Standard Webhooks HMAC signatures, verified before parsing or sending.
-verify_jwt = false

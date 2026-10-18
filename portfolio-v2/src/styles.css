@@ -1,6 +1,0 @@
-/* All existing visual rules stay in public/css in their original cascade order. */
-app-root,
-portfolio-home-page,
-portfolio-project-page {
-  display: contents;
-}
