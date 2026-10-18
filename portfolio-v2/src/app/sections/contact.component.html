@@ -1,0 +1,86 @@
+<div class="contact-panel glass reveal">
+  <div class="contact-copy">
+    <p class="eyebrow">
+      <span class="status-dot"></span> GOOD THINGS START WITH A CONVERSATION
+    </p>
+    <h2>
+      Let’s make <br />something <br /><span class="serif">awesome</span>
+      together!
+    </h2>
+    <p>
+      Have a project in mind, an interesting opportunity,<br />or just want to
+      say hello? I’d love to hear from you.
+    </p>
+    <a class="contact-email" href="mailto:Sarwech99&#64;Gmail.com"
+      >Sarwech99&#64;Gmail.com
+      <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i
+    ></a>
+    <div class="contact-details">
+      <a href="tel:+923133599267">+92 313-3599267</a
+      ><span>Karachi, Pakistan</span>
+    </div>
+    <div class="socials" id="socials"></div>
+  </div>
+  @if(disabled){<div class="glass contact-paused"><h3>Let’s connect by email.</h3><p>The contact form is temporarily closed.</p><a [href]="'mailto:'+cms.snapshot().profile.email">{{cms.snapshot().profile.email}}</a></div>}@else{<form
+    id="contact-form"
+    [formGroup]="contactForm"
+    (submit)="submit($event)"
+    [attr.aria-busy]="sending() ? true : null"
+  >
+    <h3>Tell me about your idea.</h3>
+    <label for="name">Your name</label
+    ><input
+      id="name"
+      name="name"
+      formControlName="name"
+      placeholder="What should I call you?"
+      required
+      maxlength="100"
+      autocomplete="name"
+    /><label for="email">Email address</label
+    ><input
+      id="email"
+      name="email"
+      formControlName="email"
+      type="email"
+      placeholder="you&#64;example.com"
+      required
+      maxlength="150"
+      autocomplete="email"
+    /><label for="subject">What do you have in mind?</label
+    ><select id="subject" name="subject" formControlName="subject">
+      <option>Project collaboration</option>
+      <option>Job opportunity</option>
+      <option>Just saying hello</option></select
+    ><label for="message">Your message</label
+    ><textarea
+      id="message"
+      name="message"
+      formControlName="message"
+      placeholder="A little about your project…"
+      required
+      minlength="10"
+      maxlength="3000"
+      rows="4"
+    ></textarea
+    ><button class="button" type="submit" [disabled]="sending()">
+      @if (sending()) {
+        Sending…
+      } @else {
+        Let’s start a conversation
+        <i
+          class="fa-solid fa-arrow-up-right-from-square"
+          aria-hidden="true"
+        ></i>
+      }
+    </button>
+    <p
+      class="form-note"
+      id="form-status"
+      role="status"
+      [attr.data-state]="state()"
+    >
+      {{ status() }}
+    </p>
+  </form>}
+</div>

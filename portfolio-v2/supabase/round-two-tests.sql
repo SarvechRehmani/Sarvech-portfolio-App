@@ -1,0 +1,37 @@
+begin;
+do $$declare owner_id uuid;layout jsonb;target uuid;copy uuid;data jsonb;expired uuid:=gen_random_uuid();visitor text:=gen_random_uuid()::text;recruiter uuid;begin
+select user_id into owner_id from portfolio_api.admins limit 1;
+perform set_config('request.jwt.claims',jsonb_build_object('sub',owner_id,'role','authenticated','aal','aal2')::text,true);
+layout:=public.portfolio_studio('layout');
+perform public.portfolio_studio('save_layout',layout||'{"theme_transition":"portal"}');
+if(public.portfolio_studio('layout')->>'theme_transition')<>'portal' then raise exception 'Portal setting not saved';end if;
+copy:=portfolio_api.copy_layout((select id from portfolio_api.layouts where revision_kind='DRAFT'),'HISTORY');
+if(portfolio_api.layout_data(copy)->>'theme_transition')<>'portal' then raise exception 'Theme motion not copied';end if;
+perform public.portfolio_studio('save_layout',layout||'{"theme_transition":"slide"}');
+if(public.portfolio_studio('layout')->>'theme_transition')<>'slide' then raise exception 'Slide setting not saved';end if;
+target:=portfolio_api.write_content('skill_groups','{"title":"Rollback category","names":["One source","Another source"],"connections_by_skill":{"One source":["Angular","HTML5"],"Another source":["Java"]}}');
+data:=portfolio_api.content_data('skill_groups',target);
+if(data->'connections_by_skill'->'One source')<>'["Angular","HTML5"]'::jsonb then raise exception 'Individual cross-category connections missing';end if;
+if(data->'connections_by_skill'->'Another source')<>'["Java"]'::jsonb then raise exception 'Skill relations leaked between siblings';end if;
+copy:=portfolio_api.write_content('skill_groups',data,null,0,'HISTORY',target);
+if(portfolio_api.content_data('skill_groups',copy)->'connections_by_skill')<>(data->'connections_by_skill')then raise exception 'History lost skill links';end if;
+insert into portfolio_api.content_history(id,created_at,updated_at,version,section,operation,record_id,before_record_id,position,actor)values(expired,now()-interval '31 days',now(),0,'skill_groups','UPDATE',target,copy,0,owner_id::text);
+perform portfolio_api.expire_history();
+if exists(select 1 from portfolio_api.content_history where id=expired)then raise exception 'Old history not cleaned';end if;
+if not exists(select 1 from portfolio_api.skill_categories where id=target and revision_kind='DRAFT')then raise exception 'History retention changed current content';end if;
+perform public.portfolio_manage('create_recruiter',jsonb_build_object('company','Rollback location test','slug','round-'||replace(visitor,'-',''),'note','Temporary'));
+select id into recruiter from portfolio_api.recruiter_links where slug='round-'||replace(visitor,'-','');
+perform set_config('request.jwt.claims','{"role":"service_role"}',true);
+perform public.portfolio_visitor_event(jsonb_build_object('type','visit','label','/rollback-only','session_id',visitor,'device','desktop','referrer','','recruiter_ref','round-'||replace(visitor,'-','')),'1.1.1.1');
+perform portfolio_api.mail_jobs('visitor_geo_result',jsonb_build_object('session_id',visitor,'city','Test city','country','Test country','country_code','XX'));
+perform set_config('request.jwt.claims',jsonb_build_object('sub',owner_id,'role','authenticated','aal','aal2')::text,true);
+select value into data from jsonb_array_elements(public.portfolio_manage('recruiters')) where value->>'id'=recruiter::text;
+if data->'locations'->0->>'label'<>'Test country' or data->>'last_location'<>'Test city, Test country' then raise exception 'Recruiter location attribution missing';end if;
+end $$;
+set local role anon;
+do $$begin
+begin perform portfolio_api.expire_history();raise exception 'Anon could prune history';exception when insufficient_privilege then null;end;
+begin perform 1 from portfolio_api.skill_connections;raise exception 'Anon draft links readable';exception when insufficient_privilege then null;end;
+end $$;
+reset role;
+rollback;

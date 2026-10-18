@@ -1,0 +1,24 @@
+begin;
+select set_config('request.jwt.claims',jsonb_build_object('sub',(select user_id from portfolio_api.admins limit 1),'role','authenticated','aal','aal2')::text,true);
+do $$declare review jsonb;result jsonb;item uuid;v bigint;baseline jsonb;old_layout jsonb;live_blog jsonb;begin
+ review:=public.portfolio_editor_review();if length(review->>'hash')<>64 then raise exception 'Review hash missing';end if;
+ if jsonb_array_length(review->'review'->'sections'->'projects'->'after')=0 then raise exception 'Review omitted projects';end if;
+ old_layout:=public.portfolio_studio('layout');
+ perform public.portfolio_save_layout_checked(old_layout,old_layout||'{"maintenance_title":"Rollback-only editor test"}'::jsonb);
+ begin perform public.portfolio_save_layout_checked(old_layout,old_layout);raise exception 'Stale layout accepted';exception when serialization_failure then null;end;
+ begin perform public.portfolio_apply_review('publish',review->>'hash');raise exception 'Stale review accepted';exception when serialization_failure then null;end;
+ live_blog:=public.portfolio_blog(null);
+ result:=portfolio_api.save_draft('blog_posts','{"title":"Rollback-only private draft","slug":"rollback-editor-test","published":true,"content":"Not public"}',null,999,null);item:=(result->>'id')::uuid;v:=(result->>'version')::bigint;
+ if public.portfolio_blog(null) is distinct from live_blog then raise exception 'Blog autosave leaked to live';end if;
+ result:=portfolio_api.save_draft('blog_posts','{"title":"Rollback-only private draft 2","slug":"rollback-editor-test","published":true}',item,999,v);
+ begin perform portfolio_api.save_draft('blog_posts','{"title":"Stale overwrite","slug":"rollback-editor-test"}',item,999,v);raise exception 'Stale version accepted';exception when serialization_failure then null;end;
+ review:=public.portfolio_editor_review();perform public.portfolio_apply_review('schedule',review->>'hash',now()+interval '1 hour');
+ perform public.portfolio_save_layout_checked(public.portfolio_studio('layout'),old_layout);
+ update portfolio_api.site_state set scheduled_at=now()-interval '1 minute' where singleton='site';perform portfolio_api.run_scheduled_publish();
+ if public.portfolio_schedule_notice() is null then raise exception 'Changed scheduled draft was not blocked';end if;
+ review:=public.portfolio_editor_review();perform public.portfolio_apply_review('publish',review->>'hash');
+ if not exists(select 1 from jsonb_array_elements(public.portfolio_blog(null)) b where b->'data'->>'slug'='rollback-editor-test')then raise exception 'Reviewed blog publish failed';end if;
+ if has_function_privilege('anon','public.portfolio_editor_review()','execute') or has_function_privilege('anon','public.portfolio_apply_review(text,text,timestamptz)','execute')then raise exception 'Anonymous editor access granted';end if;
+ raise notice 'PASS review snapshot, stale review, stale layout, stale version, blog isolation, reviewed blog publish, schedule invalidation, anonymous denial';
+end $$;
+rollback;

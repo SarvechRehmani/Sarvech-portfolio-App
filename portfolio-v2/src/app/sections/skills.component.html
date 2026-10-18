@@ -1,0 +1,84 @@
+<div class="section-heading reveal">
+  <div>
+    <p class="eyebrow">04 / TECHNICAL SKILLS</p>
+    <h2>
+      My favourite skills.<br /><span class="serif"
+        >Built on solid foundations.</span
+      >
+    </h2>
+  </div>
+  <p class="section-aside">The right tools.<br />A solid foundation.</p>
+</div>
+<div class="skill-matrix" id="skills-grid">
+  <aside class="skill-inspector">
+    <div class="matrix-label"><span></span> STACK EXPLORER</div>
+    <div class="skill-orbit" aria-hidden="true">
+      <i class="fa-solid fa-code"></i><span></span><span></span>
+    </div>
+    <div class="skill-readout" aria-live="polite" aria-atomic="true">
+      @if (active()) {
+        <p class="matrix-label">{{ group()?.title }}</p>
+        <h3>{{ active() }}</h3>
+        <p>Connected tools in my stack</p>
+        <div class="skill-connections">
+          @for (name of connections().slice(0, 6); track name) {
+            <span>{{ name }}</span>
+          }
+        </div>
+      } @else {
+        <p class="matrix-label">CONNECTED BY DESIGN</p>
+        <h3>Explore my toolkit.</h3>
+        <p>
+          Hover, focus or tap a technology to explore how it fits into my stack.
+        </p>
+        <div class="skill-connections"></div>
+      }
+    </div>
+    <div class="matrix-footer">
+      <span
+        ><b>{{ all.length }}</b> technologies</span
+      ><button
+        type="button"
+        class="skill-reset"
+        [hidden]="!pinned()"
+        (click)="reset()"
+      >
+        Reset ↗
+      </button>
+    </div>
+  </aside>
+  <div class="matrix-groups">
+    @for (group of groups; track group.title; let i = $index) {
+      <article class="matrix-group">
+        <header>
+          <span class="matrix-index">0{{ i + 1 }}</span>
+          <h3>{{ group.title }}</h3>
+          <i [class]="group.icon" aria-hidden="true"></i>
+        </header>
+        <p>{{ group.description }}</p>
+        <div class="matrix-nodes">
+          @for (name of group.names; track name) {
+            <button
+              type="button"
+              class="skill-node"
+              [class.is-selected]="pinned() === name"
+              [class.is-related]="
+                pinned() !== name && connections().includes(name)
+              "
+              [attr.data-skill]="name"
+              [attr.aria-pressed]="pinned() === name"
+              (pointerenter)="hover($event, name)"
+              (pointerleave)="hovered.set(null)"
+              (focus)="focus($event, name)"
+              (blur)="focused.set(null)"
+              (click)="pinned.set(name)"
+            >
+              {{ name }}<span aria-hidden="true">↗</span>
+            </button>
+          }
+        </div>
+      </article>
+    }
+  </div>
+</div>
+<div class="skill-tags reveal" id="skill-tags" hidden></div>

@@ -1,0 +1,451 @@
+<div (input)="editorChanged()" (change)="editorChanged()" (click)="editorChanged()" class="admin-shell" [class.light]="light()" [ngStyle]="adminVariables()" [class.theme-transition]="themeTransition()">
+  @if(checkingSession()) {
+    <div class="studio-boot" role="status"><div class="studio-loader-mark">S<span>.</span></div><span class="loader-track"></span><p>Opening your studio</p></div>
+  } @else if (!authenticated()) {
+    <div class="login-layout"><aside class="login-story"><a href="/" class="login-logo">S<span>.</span></a><p class="kicker">A SPACE FOR YOUR NEXT CHAPTER</p><h2>Your work.<br/>Your story.<br/><span>Your studio.</span></h2><p>A thoughtful place to shape what the world sees.</p><div class="login-orbit" aria-hidden="true"><span>S.</span></div><small>PORTFOLIO STUDIO / SARVECH REHMANI</small></aside><section class="login-form-wrap"><button class="login-appearance" type="button" (click)="toggleAppearance($event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">@if(light()){<path d="M20.7 14A8.8 8.8 0 0 1 10 3.3a9 9 0 1 0 10.7 10.7Z"/>}@else{<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>}</svg><span>{{light()?'Dark mode':'Light mode'}}</span></button>
+    @if(recoveryStep){<form class="login login-card recovery-card" (ngSubmit)="recoveryStep==='recovery_link'||recoveryStep==='email_link'?acceptEmailLink():recoveryStep==='email'?sendRecovery():recoveryStep==='code'?verifyRecovery():recoveryStep==='mfa'?recoveryMfa():saveRecoveryPassword()"><span class="login-eyebrow">ACCOUNT RECOVERY</span><h1>{{recoveryStep==='email_link'?'Confirm your email change.':recoveryStep==='password'?'A fresh start.':'Forgot your password?'}}</h1><p>{{recoveryStep==='email_link'?'Confirm this address using the link below.':'Verify your email before choosing a new password.'}}</p>@if(recoveryStep==='email'){<label>Login email<input type="email" name="recovery-email" [(ngModel)]="recoveryEmail" autocomplete="username" required placeholder="you@example.com"/></label>}@else if(recoveryStep==='code'||recoveryStep==='mfa'){<label>{{recoveryStep==='mfa'?'Authenticator code':'Email verification code'}}<input name="recovery-code" [(ngModel)]="recoveryCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required placeholder="Enter verification code"/></label>}@else if(recoveryStep==='recovery_link'||recoveryStep==='email_link'){<p class="help">Click below to verify this email link. Opening the email alone does not consume it.</p>}@else{<label>New password<input type="password" name="recovery-password" [(ngModel)]="recoveryPassword" minlength="12" autocomplete="new-password" required placeholder="At least 12 characters"/></label><label>Confirm password<input type="password" name="recovery-confirm" [(ngModel)]="recoveryConfirm" minlength="12" autocomplete="new-password" required placeholder="At least 12 characters"/></label>}<button class="primary" [disabled]="busy()">{{busy()?'Please wait…':recoveryStep==='email'?'Send recovery email':recoveryStep==='recovery_link'||recoveryStep==='email_link'?'Verify email link':recoveryStep==='password'?'Update password':'Verify code'}}</button><button type="button" (click)="cancelRecovery()">← Back to sign in</button></form>}@else{
+    <form class="login login-card" [formGroup]="loginForm" (ngSubmit)="login()">
+      <span class="login-eyebrow">OWNER ACCESS <i></i></span>
+      <h1>Welcome to your studio.</h1>
+      <p>Sign in with your authorized owner account.</p>
+      @if(session.mfaRequired()) {
+        <label>Authenticator code<input inputmode="numeric" autocomplete="one-time-code" name="login-code" [ngModelOptions]="{standalone:true}" [(ngModel)]="authCode" maxlength="6"  placeholder="Enter verification code"/></label>
+        <button type="button" (click)="verifyLoginCode()" [disabled]="busy()">Verify code</button>
+        <button type="button" (click)="signOut()">Use another account</button>
+      } @else {
+        <label>Email<input type="email" formControlName="email" autocomplete="username"  placeholder="you@example.com"/></label>
+        <label>Password<span class="password-field"><input [type]="showPassword?'text':'password'" formControlName="password" autocomplete="current-password" placeholder="At least 12 characters"/><button type="button" class="password-eye" [attr.aria-label]="showPassword?'Hide password':'Show password'" [attr.aria-pressed]="showPassword" (click)="showPassword=!showPassword"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>@if(showPassword){<path d="m3 3 18 18"/>}</svg></button></span></label><button type="button" class="forgot-link" (click)="recoveryStep='email';notice.set('')">Forgot password?</button>
+        <button class="sign-in-submit" [disabled]="busy()">{{busy()?'Signing in…':'Sign in to your studio'}} <span>↗</span></button>
+      }
+      
+      <a href="/">View website ↗</a>
+    </form>}</section></div>
+  } @else {
+    @if(sidebarOpen()){<button class="sidebar-scrim" (click)="sidebarOpen.set(false)" aria-label="Close sidebar"></button>}
+    <aside id="studio-sidebar" class="sidebar" [class.drawer-open]="sidebarOpen()" [inert]="!!modal()" (keydown.escape)="sidebarOpen.set(false)">
+      <button class="sidebar-close" (click)="sidebarOpen.set(false)" aria-label="Close sidebar">×</button>
+      <a class="admin-brand" href="/"
+        >S<span>.</span> <small>PORTFOLIO STUDIO<br/><em>YOUR CREATIVE WORKSPACE</em></small></a
+      >
+      
+      <nav aria-label="Admin sections">
+        @for(group of navGroups;track group.label){ @if(group.label){<p class="nav-category">{{group.label}}</p>} @for (tab of groupTabs(group.keys); track tab[0]) {
+          <button [class.active]="active() === tab[0]" (click)="open(tab[0])">
+            <svg
+              class="tab-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path [attr.d]="tabPaths[tab[0]]" /></svg
+            ><span>{{ tab[1] }}</span
+            >@if(counts()[tab[0]]>0){<span class="nav-count" [class.has-unread]="tab[0]==='messages'&&counts()[tab[0]]>0">{{counts()[tab[0]]}}</span>}<span class="nav-arrow">↗</span>
+          </button>
+        }
+      }</nav>
+      <footer><a href="/" target="_blank">View website <span>↗</span></a></footer>
+    </aside>
+    <studio-publish-review [review]="review()" [mode]="reviewMode" [busy]="busy()" (closed)="review.set(null)" (refresh)="showReview(reviewMode)" (confirmed)="reviewDate=$event;confirmReview()"/><main class="admin-main" [inert]="!!modal() || sidebarOpen()">
+      <header class="workspace-top"><button class="sidebar-toggle" (click)="sidebarOpen.set(!sidebarOpen())" [attr.aria-expanded]="sidebarOpen()" aria-controls="studio-sidebar" aria-label="Toggle sidebar">☰</button><span>Workspace <b>/</b> {{activeTitle}}</span><div><button class="top-action theme-control" (click)="toggleAppearance($event)" [attr.aria-label]="light()?'Switch to dark mode':'Switch to light mode'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">@if(light()){<path d="M20.7 14A8.8 8.8 0 0 1 10 3.3a9 9 0 1 0 10.7 10.7Z"/>}@else{<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>}</svg><span>{{light()?'Dark mode':'Light mode'}}</span></button><button class="top-action" (click)="signOut()" aria-label="Sign out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 4H4v16h5M13 8l4 4-4 4M8 12h13"/></svg><span>Sign out</span></button><button class="avatar" (click)="open('account')" aria-label="Account settings">S</button></div></header>
+      <section class="publish-bar" [class.has-draft]="dirty()">
+        <div class="publish-state"><span class="publish-icon" aria-hidden="true">{{dirty()?'↗':'✓'}}</span><i [class.pending]="dirty()"></i><div><strong>{{dirty()?'You have unpublished changes':'All changes are published.'}}</strong><small>{{state().scheduled_at?'Scheduled: '+date(state().scheduled_at):dirty()?'Your saved draft is ready for a preview or publication.':'Your latest story is live. Keep creating.'}}</small></div></div>
+        @if(scheduleNotice()){<p class="help">{{scheduleNotice()}}</p>}<div class="publish-actions"><a class="button ghost" href="/?preview=1" target="_blank">Preview ↗</a>@if(state().scheduled_at){<button (click)="cancelSchedule()" [disabled]="busy()">Cancel schedule</button>}@else{<button (click)="schedule()" [disabled]="busy()">Schedule</button>}<button class="primary" (click)="publish()" [disabled]="busy()">Publish changes ↗</button></div>
+      </section>
+      
+      @if(tracking()){<section class="autosave-strip" role="status"><span class="save-dot" [class.offline]="!!autosave.error"></span><b>{{autosave.status}}</b><span>{{autosave.error||'Private draft · Publish when you are ready'}}</span>@if(autosave.error){<button (click)="save()">Retry sync</button>}</section>@if(autosave.recovery){<section class="recovery-banner"><div><b>Recovered edits are available on this device.</b><p>Restore them into this editor, or keep the server draft. Restoring may replace newer field values.</p><details><summary>Preview recovered fields</summary>@for(field of recoveryFields();track field.path){<p><b>{{field.path.replace('data.','')}}</b>: {{field.after.slice(0,180)}}</p>}</details></div><button (click)="restoreRecovery()">Restore edits</button><button (click)="autosave.dismissRecovery()">Keep server draft</button></section>}}<div class="page-title">
+        <div>
+          <p class="kicker">CONTENT STUDIO / YOUR WORKSPACE</p>
+          <h1>{{ activeTitle }}<span class="title-dot">.</span></h1>
+        </div>
+        @if (
+          ![
+            "profile",
+            "resume",
+            "messages",
+            "analytics",
+            "content_history",
+            "dashboard",
+            "media",
+            "layout", "sharing", "account", "recruiters", "activity", "health", "email_history",
+          ].includes(active())
+        ) {
+          <button (click)="edit()">+ Add item</button>
+        }
+      </div>
+      <div class="studio-view" [class.switching]="loading()">
+      @if (loading()) {
+        <section class="loading-stage" role="status"><span class="mini-loader">S<i>.</i></span><p>Preparing {{activeTitle.toLowerCase()}}</p><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-cards"><i></i><i></i><i></i></div></section>
+      } @else if (active() === "dashboard" && overview()) {
+        <section class="welcome-panel"><div><p class="kicker">YOUR PORTFOLIO, AT A GLANCE</p><h2>Make your next great impression.</h2><p>A little insight, a fresh update, a new chapter. Everything you need to keep your portfolio moving.</p><div class="actions"><button class="primary" (click)="open('projects')">Manage projects ↗</button><button (click)="pdf(false)" [disabled]="busy()" (mouseenter)="prefetchPdf()" (focus)="prefetchPdf()">{{pdfBusy()?'Preparing…':'Download PDF'}} ↓</button><button (click)="pdf(true)" [disabled]="busy()">Preview PDF</button></div></div><div class="welcome-art" aria-hidden="true"><i class="welcome-orbit-dot"></i><i class="welcome-orbit-dot second"></i><span>S<b>.</b></span><small>BUILT WITH PURPOSE.</small></div></section>
+        @if(health();as checks){<section class="panel studio-advice"><div class="panel-heading"><div><p class="kicker">YOUR NEXT BEST STEP</p><h2>A little attention goes a long way.</h2></div><button (click)="open('dashboard')">↻</button></div><div class="advice-grid">@if(!checks.contact_enabled){<button class="advice-warning" (click)="open('messages')"><span class="advice-icon">!</span><div><b>Your contact form is off</b><p>Visitors can email you directly, but cannot submit the form.</p></div><span>↗</span></button>}@if(checks.unread_messages){<button (click)="open('messages')"><span class="advice-icon">✉</span><div><b>{{checks.unread_messages}} unread messages</b><p>A new conversation could be your next opportunity.</p></div><span>↗</span></button>}@if(checks.unpublished){<button (click)="open('layout')"><span class="advice-icon">↗</span><div><b>Your latest edits are still drafts</b><p>Preview the saved changes, then Publish when ready.</p></div><span>↗</span></button>}@if(checks.scheduled_at){<button (click)="open('layout')"><span class="advice-icon">◷</span><div><b>Publication is scheduled</b><p>{{date(checks.scheduled_at)}}</p></div><span>↗</span></button>}@if(checks.new_login){<button (click)="open('activity')"><span class="advice-icon">↗</span><div><b>New login on this device</b><p>Review your current session and mark it as recognized.</p></div><span>↗</span></button>}@if(!checks.mfa){<button class="advice-warning" (click)="open('account')"><span class="advice-icon">◈</span><div><b>Protect your studio</b><p>Set up 2-step login with an authenticator app.</p></div><span>↗</span></button>}@if(!checks.linkedin){<button (click)="open('profile')"><span class="advice-icon">in</span><div><b>Add your LinkedIn</b><p>Help recruiters connect with you.</p></div><span>↗</span></button>}@if(checks.unrecognized){<button class="advice-warning" (click)="open('activity')"><span class="advice-icon">!</span><div><b>{{checks.unrecognized}} unfamiliar login sessions</b><p>Check devices and expire any that are not yours.</p></div><span>↗</span></button>}@if(!checks.mail_ready){<button class="advice-warning" (click)="open('messages')"><span class="advice-icon">✉</span><div><b>Finish email delivery setup</b><p>Enable contact notifications and replies.</p></div><span>↗</span></button>}@if(checks.maintenance){<button class="advice-warning" (click)="open('layout')"><span class="advice-icon">⌁</span><div><b>Your website is in maintenance</b><p>Visitors currently see your maintenance message.</p></div><span>↗</span></button>}@if(checks.mfa&&checks.linkedin&&!checks.unrecognized&&checks.mail_ready&&!checks.maintenance&&checks.contact_enabled&&!checks.unread_messages&&!checks.unpublished&&!checks.scheduled_at){<div class="advice-clear"><b>Looking good.</b><p>Your essential setup is complete.</p></div>}</div></section>}
+        <studio-workspace-alerts (navigate)="open($event)"/><div class="metrics">@for(key of ['visits','unique_visitors','resume','messages'];track key){<article><div class="metric-heading"><small>{{metricLabel(key)}}</small><span class="metric-icon" aria-hidden="true">{{metricIcon(key)}}</span></div><div class="metric-value"><strong [studioCount]="stats()?.[key]||0"></strong><span class="metric-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div><span class="metric-bottom">Last 7 days</span></article>}</div>
+        <div class="dashboard-grid"><section class="panel"><div class="panel-heading"><div><p class="kicker">YOUR AUDIENCE</p><h2>Visits over time</h2></div><span class="badge">Last 7 days</span></div><div class="chart" [style.--bar-count]="stats()?.daily?.length||7">@for(day of stats()?.daily||[];track day.day;let i=$index){<div [class.show-tick]="chartTick(i,stats()?.daily?.length||7)" [title]="day.day+': '+day.count"><span [style.height.%]="day.count/maxDaily()*100"></span><small>{{day.day.slice(5)}}</small></div>}</div>@if(!stats()?.visits){<p class="empty-caption">Real visits will appear here. Localhost and your admin browser are excluded.</p>}</section><section class="panel portfolio-health"><p class="kicker">CONTENT LIBRARY</p><h2>Your story, in numbers.</h2>@for(key of ['projects','skills','certificates','unread'];track key){<div><span>{{key==='unread'?'Unread messages':key}}</span><strong>{{overview()![key]}}</strong></div>}<button (click)="open('analytics')">Explore analytics ↗</button></section></div>
+        <div class="dashboard-grid"><section class="panel"><div class="panel-heading"><h2>Recent changes</h2><button (click)="open('content_history')">View all →</button></div>@for(item of overview()!['recent'];track item.id){<div class="activity activity-card"><span class="activity-symbol" [attr.data-operation]="operationKind(item.operation)">{{operationKind(item.operation)==='created'?'+':operationKind(item.operation)==='deleted'?'−':'↗'}}</span><div><b>{{item.title||contentTitle(item.table_name)}}</b><p><span>{{contentTitle(item.table_name)}}</span><span class="activity-divider">·</span>{{date(item.created_at)}}</p></div><span class="activity-badge" [attr.data-operation]="operationKind(item.operation)">{{operationKind(item.operation)}}</span></div>}@empty{<p>No changes yet.</p>}</section><section class="panel"><p class="kicker">QUICK ACTIONS</p><h2>Keep things fresh.</h2><button class="quick-link" (click)="open('profile')">Update your profile <span>↗</span></button><button class="quick-link" (click)="open('sharing')">Ask a friend for feedback <span>↗</span></button><button class="quick-link" (click)="open('layout')">Explore your brand <span>↗</span></button><button class="quick-link" (click)="open('messages')">Open your inbox <span>↗</span></button></section></div>
+      } @else if (active() === "media") {
+        <section class="panel media-intro"><div><h2>A home for your files.</h2><p>Every photo and PDF you uploaded. “Unused” files are not referenced by any draft, live content or saved history, so they are safe to delete.</p></div><label class="button primary upload-button">Upload files<input type="file" multiple accept="image/*,application/pdf" (change)="uploadMedia($event)" /></label></section>
+        <div class="filter-bar"><div class="segmented">@for(filter of ['all','unused','images','pdfs'];track filter){<button [class.selected]="mediaFilter===filter" (click)="mediaFilter=filter;mediaPage=1">{{filter==='pdfs'?'PDFs':filter}}</button>}</div><button (click)="open('media')">↻ Refresh</button></div>
+        <div class="media-grid">@for(row of mediaRows();track row.id){<article class="media-card">@if(row['usage']?.includes('Live site')){<span class="media-live-badge"><i></i>Live site</span>}<button type="button" (click)="openMedia(row)" class="media-image" [attr.aria-label]="'Preview '+row['filename']">@if(row['content_type']?.startsWith('image/')){<img [src]="row['url']" [alt]="row['filename']" loading="lazy"/>}@else{<span>PDF</span>}</button><div class="media-info"><b>{{row['filename']}}</b><p>{{bytes(row['size'])}}</p><div class="media-usage">@for(usage of row['usage']||[];track usage){@if(usage!=='Live site'){<span>{{usage}}</span>}}@if(row['unused']){<span>Unused · safe to delete</span>}</div><div class="actions"><button (click)="copyMedia(row)">Copy link</button><button [class.danger-button]="row['unused']" [disabled]="!row['unused']||busy()" (click)="removeMedia(row)">{{row['unused']?'Delete file':'Referenced'}}</button></div></div></article>}@empty{<section class="empty-state"><h2>No files here.</h2><p>Upload a photo or try a different filter.</p></section>}</div><div class="media-pagination"><span>{{mediaTotal()}} files · Page {{mediaCurrentPage()}} of {{mediaPages()}}</span><label>Per page<select [(ngModel)]="mediaSize" (change)="mediaPage=1"><option [ngValue]="8">8</option><option [ngValue]="16">16</option><option [ngValue]="32">32</option></select></label><button (click)="mediaPage=mediaCurrentPage()-1" [disabled]="mediaCurrentPage()<=1">← Previous</button><button (click)="mediaPage=mediaCurrentPage()+1" [disabled]="mediaCurrentPage()>=mediaPages()">Next →</button></div>
+      } @else if (active() === "analytics" && stats()) {
+        <label
+          >Range<select [(ngModel)]="days" (change)="analytics()">
+            <option [ngValue]="7">7 days</option>
+            <option [ngValue]="30">30 days</option>
+            <option [ngValue]="90">90 days</option>
+          </select></label
+        >
+        <div class="metrics">
+          @for (
+            key of [
+              "visits",
+              "unique_visitors",
+              "resume",
+              "projects",
+              "social",
+              "messages",
+            ];
+            track key
+          ) {
+            <article><div class="metric-heading"><small>{{metricLabel(key)}}</small><span class="metric-icon" aria-hidden="true">{{metricIcon(key)}}</span></div><div class="metric-value"><strong [studioCount]="stats()[key]||0"></strong><span class="metric-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div><span class="metric-bottom">Last {{days}} days</span></article>
+          }
+        </div>
+        <section class="panel">
+          <h2>Visits per day</h2>
+          <div class="chart" [style.--bar-count]="stats().daily.length">
+            @for (day of stats().daily; track day.day;let i=$index) {
+              <div [class.show-tick]="chartTick(i,stats().daily.length)" [title]="day.day + ': ' + day.count">
+                <span [style.height.%]="(day.count / maxDaily()) * 100"></span
+                ><small>{{ day.day.slice(5) }}</small>
+              </div>
+            }
+          </div>
+        </section>
+        <section class="panel geography-panel"><div class="panel-heading"><div><p class="kicker">AROUND THE WORLD</p><h2>Where your visitors are</h2></div><span class="badge">Last {{days}} days</span></div><div class="geography-layout"><div class="country-chart" role="img" [attr.aria-label]="'Visitor countries: '+countryTotal()+' sessions'" [style.background]="countryGradient()"><div><strong>{{countryTotal()}}</strong><span>visitor sessions</span></div></div><div class="country-legend">@for(place of geography()?.countries||[];track place.label;let i=$index){<div><i [style.background]="geoColors[i%geoColors.length]"></i><b>{{place.label}}</b><span>{{place.count}} · {{countryPercent(place.count)}}%</span></div>}@empty{<p>Country totals will appear after a real visitor arrives. Localhost and your own admin browser are excluded.</p>}</div><div class="city-list"><h3>Top cities</h3>@for(place of geography()?.cities||[];track place.label){<p><span>{{place.label}}</span><b>{{place.count}}</b></p>}@empty{<p>No city data yet.</p>}</div></div><p class="geo-footnote">Approximate IP location, not GPS. Unknown includes unavailable lookups. Raw IPs are private and removed after 30 days; country totals remain.</p><details class="visitor-details"><summary>Recent visitor locations</summary><div class="visitor-table">@for(visitor of geography()?.recent||[];track visitor.session_id){<div><code>{{visitor.ip||'IP expired'}}</code><span>{{visitor.city||'Unknown'}}{{visitor.country?', '+visitor.country:''}}</span><time>{{date(visitor.last_seen)}}</time></div>}@empty{<p>No visitor sessions recorded.</p>}</div></details></section><section class="panel social-breakdown"><p class="kicker">EACH CONNECTION COUNTS</p><h2>Social clicks by platform</h2><div class="social-platform-grid">@for(item of socialStats();track $index){<article><span class="social-mark" aria-hidden="true"><i [class]="socialIcon(item.label)"></i></span><div><b>{{item.label}}</b><a [href]="item.url" target="_blank" rel="noopener">{{item.url}}</a></div><strong>{{item.count}}</strong></article>}@empty{<p>Add social links in Profile & Hero, then Publish.</p>}</div></section><div class="reports">
+          @for (key of ["pages", "referrers", "items", "devices"]; track key) {
+            <section class="panel">
+              <h2>{{ key }}</h2>
+              @for (item of stats()[key]; track $index) {
+                <p>
+                  {{ item.label }} <b>{{ item.count }}</b>
+                </p>
+              }
+            </section>
+          }
+        </div>
+        <p>
+          Unique visitor counts represent per-tab sessions, not verified
+          people. Localhost and owner browsers are excluded.
+        </p>
+        <studio-visitor-journey/>
+      } @else if (active() === "messages") {
+        <p class="page-description">Sent from the contact form on your website. Messages you flag as spam stay in Spam, so nothing is lost.</p>
+        <div class="mail-tools"><label class="contact-switch" [class.off]="!contactState().enabled"><span class="switch"><input type="checkbox" [checked]="contactState().enabled" (change)="toggleContact($any($event.target).checked)" [disabled]="busy()"/><span></span></span>Contact form: <b>{{contactState().enabled?'ON':'OFF'}}</b></label><button (click)="exportMessages()">↧ Export CSV</button><button (click)="open('messages')">↻ Refresh</button></div>
+        @if(!contactState().mail_ready){<div class="mail-setup-note"><b>Email delivery needs setup.</b><span>Messages are saved here. Configure Gmail SMTP and the private mail worker to receive notifications and send replies.</span></div>}
+        <div class="mail-filter-row"><label class="inbox-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input aria-label="Search messages" placeholder="Search name, email or text…" [(ngModel)]="search"/></label><div class="mail-filter-pills" aria-label="Message filters">@for(filter of messageFilters;track filter.key){<button [class.active]="messageFilter===filter.key" (click)="messageFilter=filter.key" [attr.aria-pressed]="messageFilter===filter.key">{{filter.label}} @if(messageCount(filter.key)){<span>{{messageCount(filter.key)}}</span>}</button>}</div></div>
+        <div class="mail-selection"><label><input type="checkbox" [checked]="allMessagesSelected" (change)="selectAllMessages($any($event.target).checked)"/>Select all shown</label>@if(selectedMessages.size){<span>{{selectedMessages.size}} selected</span><button (click)="messageAction('read')">Mark read</button><button (click)="messageAction('spam')">Spam</button><button class="danger-button" (click)="messageAction('delete')">Delete</button>}</div>
+        <div class="mail-list">@for(row of filteredRows();track row.id){<article class="mail-card" [class.unread-mail]="!row['is_read']" [class.spam-mail]="row['is_spam']"><input class="message-check" type="checkbox" [attr.aria-label]="'Select message from '+row['name']" [checked]="selectedMessages.has(row.id)" (change)="selectMessage(row.id,$any($event.target).checked)"/><div class="mail-card-main"><header><div><h3>{{row['name']}}</h3>@if(!row['is_read']){<span class="mail-badge new">NEW</span>}@if(row['is_spam']){<span class="mail-badge spam">SPAM</span>}@else if(row['replied_at']){<span class="mail-badge replied">REPLIED</span>}@else{<span class="mail-badge pending">PENDING</span>}</div><time>{{date(row.created_at||'')}}</time></header><a class="mail-sender" [href]="reply(row)">{{row['email']}}</a><div class="followup-chips">@for(label of row['labels']||[];track label){<span>{{label}}</span>}@if(row['follow_up_at']){<span [class.due]="followupDue(row)">{{row['follow_up_done']?'✓ Completed':followupDue(row)?'Follow-up due':'Follow up'}} · {{date(row['follow_up_at'])}}</span>}</div><p class="mail-subject">{{row['subject']}}</p><p class="message-body">{{row['message']}}</p><div class="mail-actions"><button class="primary" (click)="toggleReply(row)" [disabled]="row['is_spam']">↶ {{replyingId===row.id?'Close reply':'Reply'}}</button><button (click)="messageAction(row['is_read']?'unread':'read',row)">{{row['is_read']?'Mark unread':'Mark read'}}</button><button (click)="messageAction(row['is_spam']?'unspam':'spam',row)">{{row['is_spam']?'Not spam':'Spam'}}</button><button (click)="editFollowup(row)">Labels & follow-up</button><button class="danger-button" (click)="messageAction('delete',row)">Delete</button></div>@if(followupId===row.id){<form class="inline-reply followup-editor" (ngSubmit)="saveFollowup(row)"><p class="kicker">PRIVATE WORKSPACE / ONLY YOU SEE THIS</p><label>Labels <input name="followup-labels" [(ngModel)]="followupLabels" placeholder="Recruiter, Java role, Priority — separate with commas" maxlength="270"/></label><small>Up to 8 labels, 32 characters each. Search also includes labels and notes.</small><label>Private notes<textarea name="followup-notes" [(ngModel)]="followupNotes" placeholder="Context, next steps, or details to remember…" maxlength="4000" rows="4"></textarea></label><label>Follow-up reminder · your device time<input name="followup-date" type="datetime-local" [(ngModel)]="followupAt"/></label><label class="followup-done"><input name="followup-done" type="checkbox" [(ngModel)]="followupDone"/>Mark reminder completed</label><p class="help">Due reminders appear on Overview and in the Follow-ups due inbox filter. No email or push notification is sent.</p><div class="actions"><button class="primary" [disabled]="busy()">Save private follow-up</button><button type="button" (click)="followupId=''">Cancel</button></div></form>}@if(replyingId===row.id){<form class="inline-reply" (ngSubmit)="sendReply(row)"><p>To: <b>{{row['email']}}</b> · their answer comes to your own email</p><input aria-label="Reply subject" name="reply-subject" [(ngModel)]="replySubject" maxlength="200" required placeholder="Enter a value…"/><textarea aria-label="Reply body" name="reply-body" [(ngModel)]="replyBody" rows="8" maxlength="8000" required placeholder="Write the details here…"></textarea><div class="actions"><button class="primary" [disabled]="busy()||!contactState().mail_ready">➤ Send reply</button><button type="button" (click)="replyingId=''">Cancel</button><a [href]="replyApp(row)">Open in my email app instead ↗</a></div>@if(!contactState().mail_ready){<p class="help">Configure email delivery first. You can use your email app meanwhile.</p>}</form>}</div></article>}@empty{<div class="empty-state"><h2>No messages here.</h2><p>{{search?'Try a different search.':'Messages will appear in the matching inbox filter.'}}</p></div>}</div>
+      } @else if(active()==='recruiters') {
+        <p class="page-description">Give each company its own link. See visits, resume downloads and pages explored. Your admin browser and localhost visits are excluded.</p><div class="actions"><button (click)="open('recruiters')">↻ Refresh</button><a class="button" href="/recruiter" target="_blank">Preview recruiter edition ↗</a></div><p class="help">Recruiter edition shows your current published skills, experience, up to 4 resume-selected projects and PDF resume.</p><form class="panel recruiter-create" (ngSubmit)="createRecruiter()"><label>Company / person<input name="recruiter-company" [(ngModel)]="recruiterCompany" maxlength="120" placeholder="e.g. TechCorp" required/></label><label>Link word<input name="recruiter-slug" [(ngModel)]="recruiterSlug" maxlength="80" [placeholder]="slug(recruiterCompany)||'techcorp'" pattern="[a-z0-9]+(-[a-z0-9]+)*"/></label><label>Note (only you see it)<input name="recruiter-note" [(ngModel)]="recruiterNote" maxlength="500" placeholder="e.g. Java role, spoke to Sara"/></label><button class="primary" [disabled]="busy()">Create link ↗</button></form>
+        @for(link of recruiters();track link.id){<article class="panel recruiter-card"><header><div><h2>{{link.company}} <span class="mail-badge" [class.replied]="link.visits">{{link.visits?'OPENED':'NOT OPENED'}}</span></h2><p>{{link.note}}</p></div><small>{{link.last_seen?'Last seen '+date(link.last_seen):'Waiting for a visit'}}</small></header><input [value]="recruiterUrl(link)" readonly [attr.aria-label]="link.company+' recruiter URL'"/><div class="recruiter-locations">@for(place of link.locations||[];track place.label){<span>{{place.label}} · {{place.count}} visitor sessions</span>}@if(link.last_location){<span>Latest: {{link.last_location}}</span>}</div><div class="recruiter-metrics">@for(metric of ['visits','resume','pages','projects','messages'];track metric){<div><strong>{{link[metric]}}</strong><span>{{metric==='resume'?'Resume downloads':metric}}</span></div>}</div><div class="actions"><button class="primary" (click)="copyRecruiter(link)">Copy full link</button><button (click)="copyCompactRecruiter(link)">Copy recruiter mode</button><a class="button" [href]="compactRecruiterUrl(link)" target="_blank">Recruiter mode ↗</a><button (click)="journeyLink.set(link)">Visitor journey</button><a class="button" [href]="recruiterUrl(link)" target="_blank">Open ↗</a><button class="danger-button" (click)="deleteRecruiter(link)">Delete link</button></div></article>}@empty{<div class="empty-state"><h2>Your next opportunity starts with a link.</h2><p>Create a company reference to start measuring interest.</p></div>}@if(journeyLink();as chosen){<studio-visitor-journey [recruiterId]="chosen.id" [company]="chosen.company"/>}<section class="panel recruiter-help"><h3>Good to know</h3><p>The reference follows the visit across home, projects, blog, resume and contact. You can add ?ref=your-word to any public URL.</p><p>Counts indicate activity using this link; they do not verify a visitor’s identity. Visitor IPs are captured privately and looked up for approximate city/country. Raw IPs expire after 30 days; VPNs may affect accuracy.</p></section>
+      } @else if(active()==='activity') {
+        <p class="page-description">Your Supabase login sessions. Review unfamiliar devices, mark trusted sessions and expire access immediately.</p><div class="actions"><button (click)="open('activity')">↻ Refresh activity</button><button (click)="refreshLocations()" [disabled]="busy()||!geoEnabled()">Refresh locations</button></div><label class="control-line geo-setting"><div><b>Approximate login location</b><p>Send admin login IPs to ipwho.is for city/country lookup. Visitor analytics has its own approved location collection. VPNs can affect accuracy.</p></div><span class="switch"><input type="checkbox" [checked]="geoEnabled()" (change)="setGeo($any($event.target).checked)" [disabled]="busy()"/><span></span></span></label><div class="session-list">@for(entry of activity();track entry.id){<article class="panel session-card" [class.unknown-session]="!entry.recognized&&!entry.current&&entry.active"><div class="session-device" aria-hidden="true">{{deviceName(entry.user_agent||'')==='Android'||deviceName(entry.user_agent||'')==='iPhone / iPad'?'▯':'▰'}}</div><div class="session-info"><h2>{{deviceName(entry.user_agent||'')}} · {{browserName(entry.user_agent||'')}}</h2><p>{{entry.ip||'IP unavailable'}} · {{entry.city||entry.country?(entry.city+(entry.city&&entry.country?', ':'')+(entry.country||'')):'Location unavailable'}}</p><small>Signed in {{date(entry.created_at)}} · Last activity {{date(entry.last_seen)}}</small><div class="session-badges">@if(entry.current){<span class="mail-badge replied">THIS SESSION</span>}<span class="mail-badge" [class.new]="entry.active">{{entry.active?'ACTIVE':'EXPIRED'}}</span>@if(entry.recognized){<span class="mail-badge replied">RECOGNIZED</span>}@else if(!entry.current&&entry.active){<span class="mail-badge pending">IS THIS YOU?</span>}</div></div><div class="actions">@if(!entry.recognized&&entry.active){<button (click)="recognizeSession(entry)">Yes, this is me</button>}@if(entry.active){<button class="danger-button" (click)="revokeSession(entry)">Expire session</button>}</div></article>}@empty{<div class="empty-state"><h2>No recorded login activity.</h2></div>}</div>
+      } @else if (active() === "content_history") {
+        <p class="page-description">Every change is recorded. Undo mistakes, clear old versions, or download a full backup of your content.</p>
+        <p class="help">Recovery history is kept for 30 days. Older restore points and their unreferenced saved revisions are cleaned up automatically; current live/draft content is preserved.</p><section class="backup-card"><div class="feature-symbol">↓</div><div><h2>Backup</h2><p>Download all content, including profile, projects, blog and messages, as one JSON file. Uploaded image and PDF bytes are not included.</p></div><button class="primary" (click)="backup()" [disabled]="busy()">Download backup ↓</button></section>
+        <section class="panel backup-verification"><p class="kicker">RECOVERY YOU CAN VERIFY</p><h2>Test before you need it.</h2><p>Run the actual content restore in a temporary transaction, compare the restored fields, then roll back every test change. Published content stays live throughout.</p><div class="actions"><button (click)="testBackup()" [disabled]="busy()">Test current backup</button><label class="button upload-button">Test a backup file<input type="file" accept=".json,application/json" (change)="testBackup($event)" [disabled]="busy()"/></label></div>@if(backupReport();as report){<div class="backup-result" [class.passed]="report.passed"><b>{{report.passed?'✓ Restore rehearsal passed':'! Needs review'}}</b><p>{{report.checked}} / {{report.expected}} content records verified</p><p>{{report.detail}}</p><small>{{report.scope}} · {{date(report.checked_at)}}</small></div>}</section>@if(backupChecks().length){<section class="panel"><p class="kicker">RECENT RESTORE REHEARSALS / 30 DAYS</p>@for(check of backupChecks();track check.id){<div class="backup-result" [class.passed]="check.passed"><b>{{check.passed?'✓ Passed':'! Needs review'}} · {{check.records}} content records</b><p>{{check.detail}}</p><small>{{date(check.created_at)}}</small></div>}</section>}<section class="backup-card"><div class="feature-symbol">↶</div><div><h2>Restore from a backup file</h2><p>Choose a backup JSON downloaded earlier. Items are added or updated; nothing is deleted. Messages are not imported. Afterwards, review and Publish.</p></div><label class="button upload-button">Choose backup file<input type="file" accept=".json,application/json" (change)="restoreBackup($event)" [disabled]="busy()" /></label></section>
+        <div class="panel-heading history-heading"><h2>Recent changes <span class="count">{{historyTotal}}</span></h2><label class="inline-label">Per page<select [(ngModel)]="historySize" (change)="historyResize()"><option [ngValue]="5">5</option><option [ngValue]="10">10</option><option [ngValue]="25">25</option><option [ngValue]="50">50</option></select></label></div>
+        @for(row of rows();track row.id){<article class="list-row history-row"><span class="badge history-operation" [attr.data-operation]="historyKind(row)">{{historyKind(row)}}</span><div><b>{{row['table_name']==='layout'?'Layout & brand':row['title']||row['table_name']}}</b><p>{{date(row.created_at||'')}}</p><small class="history-safe" title="Deleting removes this recovery point only. Current draft and live content are kept. You will lose the ability to revert using this entry.">✓ Safe for current content · recovery point only</small></div><div class="actions"><button (click)="restore(row)" [disabled]="busy()">Revert to before ↶</button><button class="danger-button" (click)="deleteHistory(row)" [disabled]="busy()">Delete</button></div></article>}@empty{<div class="empty-state"><h2>A clean slate.</h2><p>Your changes will appear here.</p></div>}
+        <div class="pagination"><p>Page {{historyPage}} of {{historyPages}} · {{historyTotal}} changes</p><div class="actions"><button (click)="historyNavigate(historyPage-1)" [disabled]="historyPage===1||busy()">← Previous</button><button (click)="historyNavigate(historyPage+1)" [disabled]="historyPage>=historyPages||busy()">Next →</button></div></div>
+      } @else if(active()==='layout') {
+        <p class="page-description">Make it feel like you. Choose a palette and arrange your story, then preview and publish.</p>
+        <section class="panel"><div class="panel-heading"><div><p class="kicker">YOUR VISUAL IDENTITY</p><h2>Color themes</h2></div><div class="actions"><button (click)="themeExample()">JSON example ↓</button><label class="button upload-button">Import theme<input type="file" accept=".json,application/json" (change)="importTheme($event)" /></label></div></div><div class="theme-grid">@for(theme of themes();track theme.id){<article class="theme-card" [class.selected]="layoutDraft.theme_id===theme.id"><button class="theme-preview" (click)="layoutDraft.theme_id=theme.id" [style.background]="theme.dark['bg']" [style.color]="theme.dark['text']"><span class="mini-nav" [style.border-color]="theme.dark['border']">S<span [style.color]="theme.dark['accent']">.</span><i></i></span><strong>Build something<br/><em [style.color]="theme.dark['accent']">remarkable.</em></strong><span class="color-dots">@for(color of ['accent','surface','muted','text'];track color){<i [style.background]="theme.dark[color]"></i>}</span></button><div class="theme-caption"><label><input type="radio" name="brand-theme" [checked]="layoutDraft.theme_id===theme.id" (change)="layoutDraft.theme_id=theme.id"/>{{theme.name}}</label><button class="danger-button" (click)="deleteTheme(theme)" aria-label="Delete theme">×</button></div></article>}</div><p class="help">Each palette includes dark and light modes. Imported JSON uses the format shown in the example.</p></section>
+        <section class="panel site-controls appearance-controls"><p class="kicker">APPEARANCE / LIGHT & DARK</p><h2>A change of atmosphere.</h2><label>Light / dark transition<select [(ngModel)]="layoutDraft.theme_transition">@for(effect of themeEffects;track effect.value){<option [value]="effect.value">{{effect.label}}</option>}</select></label><p class="help">No effect switches instantly. Blur blends the palettes, Portal expands from the toggle, and Slide reveals the new colors from top to bottom. Public effects have a slower, more visible reveal. Reduced motion uses an instant switch.</p><div class="actions"><a class="button" [href]="'/?preview=1&amp;theme-motion='+(layoutDraft.theme_transition||'none')" target="_blank">Try selected transition ↗</a><button (click)="saveLayout()" [disabled]="busy()">Save to draft</button></div></section>
+        <section class="panel site-controls loader-controls"><div class="control-card-heading"><div><p class="kicker">FIRST IMPRESSIONS</p><h2>Portfolio loader</h2></div><span class="control-icon" aria-hidden="true">◌</span></div><label class="control-line"><div><b>Show the introduction</b><p>Play your animated portfolio loader when someone first visits.</p></div><span class="switch"><input type="checkbox" [(ngModel)]="layoutDraft.loader_enabled" aria-label="Enable portfolio loader"/><span></span></span></label><p class="help">Save to draft and Publish to apply this to the public website.</p><button (click)="saveLayout()" [disabled]="busy()">Save to draft</button></section>
+        <section class="panel site-controls maintenance-controls"><div class="control-card-heading"><div><p class="kicker">TAKE A LITTLE TIME</p><h2>Maintenance mode</h2></div><span class="control-icon" aria-hidden="true">⌁</span></div><label class="control-line"><div><b>Pause the public website</b><p>Show your maintenance message. Admin and private draft previews remain available.</p></div><span class="switch"><input type="checkbox" [(ngModel)]="layoutDraft.maintenance_enabled" aria-label="Enable maintenance mode"/><span></span></span></label><label>Maintenance heading<input [(ngModel)]="layoutDraft.maintenance_title" maxlength="120" placeholder="We will be right back."/></label><label>Message for visitors<textarea [(ngModel)]="layoutDraft.maintenance_message" rows="4" maxlength="2000" placeholder="Tell visitors what is happening and when to return…"></textarea></label><label class="control-line"><div><b>End maintenance automatically</b><p>Return to the portfolio at your chosen date and time.</p></div><span class="switch"><input type="checkbox" [(ngModel)]="maintenanceAutoEnd" aria-label="End maintenance automatically"/><span></span></span></label>@if(maintenanceAutoEnd){<label>Return to website at<input type="datetime-local" [(ngModel)]="maintenanceEndLocal" aria-label="Maintenance end date and time"/></label><p class="help">Your device timezone: {{deviceTimezone}}. The deadline is saved in UTC. {{maintenanceEndPassed()?'This deadline has passed; the published site will show normally.':'The public site and open maintenance screens return automatically.'}}</p>}@else{<p class="help">Maintenance stays on until you switch it off and Publish.</p>}<div class="actions"><button class="primary" (click)="saveLayout()" [disabled]="busy()">Save to draft</button><a class="button" href="/?preview=1&maintenance=1" target="_blank">Preview maintenance screen ↗</a></div><p class="help">Save to draft, then Publish to activate these settings.</p></section><section class="panel"><p class="kicker">MAKE ROOM FOR YOUR STORY</p><h2>Home page sections</h2><label class="default-appearance">Default portfolio appearance<select [(ngModel)]="layoutDraft.default_mode"><option value="dark">Dark by default</option><option value="light">Light by default</option></select></label><p class="help">Drag, or use the arrows, to change the order. Switch a section off to hide it. The hero and tech strip always stay on top.</p><div class="pinned-row">⌁ <b>Hero + tech strip</b><span class="badge">Always on top</span></div><div cdkDropList [cdkDropListDisabled]="busy()" (cdkDropListDropped)="moveSection($event.previousIndex,$event.currentIndex)">@for(section of layoutDraft.sections;track section.key;let i=$index){<div class="section-order" cdkDrag cdkDragLockAxis="y" cdkDragPreviewContainer="parent"><span class="drag" cdkDragHandle>⠿</span><b>{{sectionLabels[section.key]}}</b><label class="switch"><input type="checkbox" [(ngModel)]="section.enabled" [attr.aria-label]="'Show '+sectionLabels[section.key]"/><span></span></label><button (click)="moveSection(i,i-1)" [disabled]="i===0" aria-label="Move section up">↑</button><button (click)="moveSection(i,i+1)" [disabled]="i===layoutDraft.sections.length-1" aria-label="Move section down">↓</button></div>}</div><div class="actions panel-bottom"><button class="primary" (click)="saveLayout()" [disabled]="busy()">Save layout to draft</button><a class="button" href="/?preview=1" target="_blank">Preview ↗</a></div></section>
+      } @else if(active()==='sharing') {
+        <div class="sharing-workspace"><section class="panel share-intro"><div class="share-heading"><span class="feature-symbol">↗</span><span class="badge">PRIVATE PREVIEW</span></div><h2>A second pair of eyes.</h2><p>Create a private link that shows your latest saved unpublished draft without a login. Only people with the link can open it. Links expire automatically; you can revoke them sooner.</p><div class="form-grid"><label>Link label<input [(ngModel)]="linkLabel" maxlength="100" placeholder="Feedback from a friend"/></label><label>Expires in<select [(ngModel)]="linkHours"><option [ngValue]="1">1 hour</option><option [ngValue]="24">24 hours</option><option [ngValue]="72">3 days</option><option [ngValue]="168">7 days</option></select></label></div><button class="primary" (click)="createLink()" [disabled]="busy()">Create private link ↗</button>@if(createdLink){<div class="copy-link"><input aria-label="New private draft link" [value]="createdLink" readonly/><button (click)="copyLink()">Copy link</button></div><p class="help">Copy this link now. You can also copy an active link from the Shared previews list below.</p>}</section>
+        <aside class="panel share-guide"><p class="kicker">FEEDBACK, WITHOUT THE WAIT</p><h2>Share the next version.</h2><ol><li><b>Save your changes</b><p>Your link shows the latest saved draft.</p></li><li><b>Choose who sees it</b><p>Send the link to someone you trust.</p></li><li><b>Stay in control</b><p>Expiry and revocation keep access temporary.</p></li></ol><span class="privacy-note">◈ Not indexed. No login needed.</span></aside></div><h2 class="list-title">Shared previews <span class="count">{{links().length}}</span></h2>@for(link of links();track link.id){<article class="list-row shared-link-row"><span class="feature-symbol small">↗</span><div><b>{{link.label}}</b><p>Expires {{date(link.expires_at)}}</p></div><span class="badge" [class.expired]="linkExpired(link)">{{linkExpired(link)?'Expired':'Active'}}</span><button class="copy-existing-link" (click)="copySharedLink(link)" [disabled]="busy()||linkExpired(link)">Copy link ↗</button><button class="danger-button" (click)="revokeLink(link)" [disabled]="busy()">Revoke & delete</button></article>}@empty{<div class="empty-state"><h2>Just between us, for now.</h2><p>Create a private link when you are ready for feedback.</p></div>}
+      } @else if(active()==='account') {
+        <div class="account-heading"><span class="account-avatar">S.</span><div><p class="kicker">SIGNED IN AS</p><h2>{{account.email()}}</h2><p>Your account. Your control.</p></div></div>
+        <div class="settings-grid"><form class="panel" (ngSubmit)="updatePassword()"><p class="kicker">KEEP IT PRIVATE</p><h2>Change password</h2><label>New password<input type="password" name="new-password" [(ngModel)]="newPassword" autocomplete="new-password" minlength="12" required placeholder="At least 12 characters"/></label><label>Confirm password<input type="password" name="confirm-password" [(ngModel)]="confirmPassword" autocomplete="new-password" required placeholder="At least 12 characters"/></label><p class="help">Use at least 12 characters. A password manager can help.</p><button class="primary" [disabled]="busy()">Update password</button></form>
+        <section class="panel email-change"><p class="kicker">VERIFY BOTH ADDRESSES</p><h2>Change login email</h2><p class="help">Verify your current email first. Supabase secure email change then requires confirmation codes from both addresses.</p>
+ @if(emailStep==='current'){<label>Current login email<input type="email" [(ngModel)]="currentEmail" autocomplete="email" placeholder="you@example.com"/></label><button class="primary" (click)="sendCurrentEmail()" [disabled]="busy()">Send current email code</button>}
+ @else if(emailStep==='current_code'){<label>Code from {{currentEmail}}<input [(ngModel)]="emailCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Enter verification code"/></label><button class="primary" (click)="verifyCurrentEmail()" [disabled]="busy()">Verify current email</button>}
+ @else if(emailStep==='new'){<label>New login email<input type="email" [(ngModel)]="newEmail" autocomplete="email" placeholder="you@example.com"/></label><button class="primary" (click)="sendNewEmail()" [disabled]="busy()">Send confirmation codes</button>}
+ @else if(emailStep==='secure_current'){<label>Final confirmation code from {{currentEmail}}<input [(ngModel)]="emailCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Enter verification code"/></label><button class="primary" (click)="confirmCurrentChange()" [disabled]="busy()">Confirm current address</button>}
+ @else{<label>Code from {{pendingEmail}}<input [(ngModel)]="emailCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Enter verification code"/></label><button class="primary" (click)="confirmNewChange()" [disabled]="busy()">Verify new email & finish</button>}
+ </section></div>
+        <section class="panel"><div class="panel-heading"><div><p class="kicker">AN EXTRA LAYER OF PROTECTION</p><h2>2-step login <span class="badge">{{verifiedAuthenticator()?'ON':'OFF'}}</span></h2></div></div><p>After your password, enter a 6-digit code from Google Authenticator, Microsoft Authenticator or Authy.</p>@if(!verifiedAuthenticator()&&!enrollment){<button class="primary" (click)="enrollAuthenticator()" [disabled]="busy()">Set up authenticator app</button>}@if(enrollment){<div class="mfa-enrollment"><img [src]="enrollment.totp.qr_code" alt="Authenticator setup QR code"/><div><label>Setup key<input [value]="enrollment.totp.secret" readonly aria-label="Authenticator setup key"/></label><p class="help">Keep this setup key somewhere safe. If you lose your phone, you may not be able to sign in. Emergency recovery: remove the factor through Supabase → Authentication → Users.</p><label>6-digit code<input inputmode="numeric" [(ngModel)]="authCode" maxlength="6" autocomplete="one-time-code" placeholder="Enter verification code"/></label><div class="actions"><button class="primary" (click)="confirmAuthenticator()" [disabled]="busy()">Verify & enable</button><button (click)="cancelAuthenticator()" [disabled]="busy()">Cancel setup</button></div></div></div>}@if(verifiedAuthenticator()){<p class="security-good">✓ Your admin is protected by an authenticator app.</p>}</section>
+        <section class="panel"><p class="kicker">SESSION CONTROL</p><h2>Sign out</h2><p>Using a shared or lost device? End its refresh sessions. Access tokens already issued can remain valid until their normal expiry.</p><div class="actions"><button (click)="signOut()">Sign out here</button><button class="danger-text" (click)="globalSignOut()" [disabled]="busy()">Sign out on all devices</button></div></section>
+      } @else if(active()==='email_history'){<studio-email-history/>} @else if(active()==='health'){<section class="panel content-health"><div class="panel-heading"><div><p class="kicker">MAKE A GOOD IMPRESSION</p><h2>Your content, checked.</h2></div><button (click)="open('health')" [disabled]="busy()">Refresh report</button></div><p>Draft content checks for SEO, image descriptions and links. Changes stay private until you Publish.</p><div class="health-summary"><b>{{healthReport().issues.length}}<span>things to review</span></b><b>{{healthReport().links.length}}<span>public links found</span></b></div>@for(issue of healthReport().issues;track $index){<article class="health-issue" [attr.data-level]="issue.level"><span>{{issue.level==='error'?'!':'◇'}}</span><div><small>{{issue.section.replace('_',' ')}}</small><b>{{issue.title}}</b><p>{{issue.detail}}</p></div><button (click)="open(issue.section)">Open editor ↗</button></article>}@empty{<p>No missing content or SEO fields were found.</p>}<div class="health-links-heading"><h3>Link availability</h3><button class="primary" (click)="checkLinks()" [disabled]="checkingLinks()">{{checkingLinks()?'Checking…':'Check public links'}}</button></div><p class="help">Manual checks use a limited server request. Sites that block checks, require login or time out are marked unverified.</p>@if(linkResults().length){<div class="link-status-filters"><span>{{linkResults().length}} / {{healthReport().links.length}} checked</span>@for(status of ['all','broken','temporary issue','unverified','available'];track status){<button type="button" [class.active]="linkFilter===status" (click)="linkFilter=status">{{status}} ({{status==='all'?linkResults().length:linkResultCount(status)}})</button>}</div>}@for(result of filteredLinkResults();track result.url){<article class="link-result" [attr.data-status]="result.status"><span>{{result.status}}</span><a [href]="result.url" target="_blank" rel="noopener noreferrer">{{result.url}}</a><small>{{result.detail}}</small></article>}</section>} @else if (editing()) {
+        <form class="editor panel" (ngSubmit)="save()">
+          @for (field of currentFields; track field.key) {
+            <div
+              class="field"
+              [class.wide]="
+                [
+                  'textarea',
+                  'list',
+                  'rich',
+                  'rich-list',
+                  'images',
+                  'records',
+                  'copy',
+                  'object','skill-links',
+                ].includes(field.type || '')
+              "
+            >
+              <label [for]="'field-' + field.key">{{ field.label }}</label>@if(field.help){<p class="field-help">{{field.help}}</p>}
+              @switch (field.type) {
+                @case ("skill-links") {<div class="skill-link-editor">@if(draft['names']?.length){<aside class="skill-source"><span class="kicker">BUILD A CONNECTION</span><h3>Skills work better together.</h3><p>Choose a source, then connect individual technologies from any category.</p><label>Source skill<select [ngModel]="skillSource()" (ngModelChange)="connectionSource=$event" [ngModelOptions]="{standalone:true}">@for(name of draft['names'];track name){<option [value]="name">{{name}}</option>}</select></label><div class="connection-meter"><b>{{skillConnectionCount()}}<small> / 7 connected</small></b><progress [value]="skillConnectionCount()" max="7"></progress></div><div class="selected-connections">@for(name of draft['connections_by_skill']?.[skillSource()]||[];track name){<button type="button" (click)="setSkillConnection(name,false)" [attr.aria-label]="'Disconnect '+name">{{name}} <span>×</span></button>}@empty{<p>Your selected connections appear here.</p>}</div></aside><section class="skill-catalog"><label>Find a technology<input [(ngModel)]="connectionSearch" [ngModelOptions]="{standalone:true}" placeholder="Search all categories…"/></label><div class="skill-catalog-scroll">@for(group of skillGroups();track group.title){<section><h4>{{group.title}}<span>{{group.names.length}}</span></h4><div class="skill-targets">@for(name of group.names;track name){<label [class.connected]="skillConnected(name)"><input type="checkbox" [checked]="skillConnected(name)" [disabled]="skillConnectionCount()>=7&&!skillConnected(name)" (change)="setSkillConnection(name,$any($event.target).checked)"/><span>{{name}}</span><i>{{skillConnected(name)?'✓':'+'}}</i></label>}</div></section>}@empty{<p>No matching technologies.</p>}</div></section>}@else{<p>Add skills above to start connecting them.</p>}</div>}
+                @case ("boolean") {
+                  <input
+                    [id]="'field-' + field.key"
+                    type="checkbox"
+                    [name]="field.key"
+                    [(ngModel)]="draft[field.key]"
+                  />
+                }
+                @case ("select") {
+                  <select
+                    [id]="'field-' + field.key"
+                    [name]="field.key"
+                    [(ngModel)]="draft[field.key]"
+                  >
+                    @for (option of field.options; track option) {
+                      <option [value]="option">{{ option }}</option>
+                    }
+                  </select>
+                }
+                @case ("textarea") {
+                  <textarea
+                    [id]="'field-' + field.key"
+                    [name]="field.key"
+                    [placeholder]="placeholder(field)"
+                    [(ngModel)]="draft[field.key]"
+                    rows="4"
+                  ></textarea>
+                }
+                @case ("list") {
+                  <textarea
+                    [id]="'field-' + field.key"
+                    [name]="field.key"
+                    [ngModel]="listValue(field.key)"
+                    (ngModelChange)="setList(field.key, $event)"
+                    rows="4"
+                    placeholder="One item per line"
+                  ></textarea>
+                }
+                @case ("records") {
+                  <div class="record-stack">
+                    @for (
+                      record of recordRows(field.key);
+                      track $index;
+                      let index = $index
+                    ) {
+                      <div class="record-fields">
+                        @for (column of field.columns; track column.key) {
+                          <label
+                            >{{ column.label
+                            }}<input
+                              [name]="
+                                field.key + '-' + index + '-' + column.key
+                              "
+                              [(ngModel)]="record[column.key]"
+                           placeholder="Enter a value…"/></label>
+                        }
+                        <button
+                          type="button"
+                          (click)="removeRecord(field.key, index)"
+                          aria-label="Remove row"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    }
+                  </div>
+                  <button type="button" (click)="addRecord(field.key)">
+                    + Add row
+                  </button>
+                }
+                @case ("object") {
+                  <div class="record-fields">
+                    @for (column of field.columns; track column.key) {
+                      <label
+                        >{{ column.label
+                        }}<input
+                          [name]="field.key + '-' + column.key"
+                          [ngModel]="objectValue(field.key, column.key)"
+                          (ngModelChange)="
+                            setObjectValue(field.key, column.key, $event)
+                          "
+                       placeholder="Enter a value…"/></label>
+                    }
+                  </div>
+                }
+                @case ("copy") {
+                  <div class="copy-fields">
+                    @for (item of copyRows(); track item.selector) {
+                      <label
+                        >{{ copyLabel(item.selector)
+                        }}<textarea
+                          [name]="item.selector"
+                          [ngModel]="item.text"
+                          (ngModelChange)="updateCopy(item.selector, $event)"
+                          rows="2"
+                         placeholder="Write the details here…"></textarea>
+                      </label>
+                    }
+                  </div>
+                }
+                @case ("file") {
+                  <input
+                    [id]="'field-' + field.key"
+                    [name]="field.key"
+                    [(ngModel)]="draft[field.key]"
+                    placeholder="File URL"
+                  /><input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    (change)="upload($event, field)"
+                  />
+                  @if(draft[field.key] && field.key!=='resume_url') {<img class="field-image-preview" [class.portrait]="field.key==='imageSrc'" [src]="draft[field.key]" [alt]="field.label+' preview'"/>}
+                  @if(field.key==='og_image'){<p class="help">Shown when your link is shared on WhatsApp, LinkedIn and other platforms. Recommended size: 1200 × 630 pixels.</p>}
+                  @if (draft[field.key]) {
+                    <a [href]="draft[field.key]" target="_blank" rel="noopener"
+                      >Open uploaded file ↗</a
+                    >
+                  }
+                }
+                @case ("images") {
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    (change)="upload($event, field)"
+                  />
+                  <div class="images">
+                    @for (
+                      image of draft[field.key] || [];
+                      track $index;
+                      let i = $index
+                    ) {
+                      <figure>
+                        <img [src]="image" alt="Project screenshot" /><button
+                          type="button"
+                          (click)="moveImage(field.key, i, i - 1)"
+                          [disabled]="i === 0"
+                          aria-label="Move image earlier"
+                        >
+                          ←</button
+                        ><button
+                          type="button"
+                          (click)="moveImage(field.key, i, i + 1)"
+                          [disabled]="i === draft[field.key].length - 1"
+                          aria-label="Move image later"
+                        >
+                          →</button
+                        ><button type="button" (click)="cover(field.key, i)">
+                          {{ i === 0 ? "Cover" : "Set as cover" }}</button
+                        ><button
+                          type="button"
+                          (click)="removeImage(field.key, i)"
+                        >
+                          Remove
+                        </button>
+                      </figure>
+                    }
+                  </div>
+                }
+                @case ("rich-list") {
+                  <studio-rich-editor [initial]="richInitial[field.key]||''" [label]="field.label" [askLink]="askEditorLink" [askImageDescription]="askImageDescription" (valueChange)="setFeatures(field.key,$event);editorChanged()" (editorError)="notice.set($event)"/>
+                  <p class="help">Write naturally. Use bullets for features, and indent for details within a feature. Formatting is generated automatically.</p>
+                }
+                @case ("rich") {
+                  <studio-rich-editor [initial]="richInitial[field.key]||''" [label]="field.label" [askLink]="askEditorLink" [askImageDescription]="askImageDescription" (valueChange)="draft[field.key]=$event;editorChanged()" (editorError)="notice.set($event)"/>
+                }
+                @default {
+                  <input
+                    [id]="'field-' + field.key"
+                    [name]="field.key"
+                    [(ngModel)]="draft[field.key]"
+                    (ngModelChange)="field.key === 'title' && titleChanged()"
+                   [placeholder]="placeholder(field)"/>
+                }
+              }
+            </div>
+          }
+          <div class="actions">
+            <button [disabled]="busy()" type="submit">
+              {{ busy() ? "Saving…" : "Save draft" }}
+            </button>
+            @if (["profile", "resume"].includes(active())) {
+              <button type="button" (click)="pdf(true)">Preview PDF</button
+              ><button type="button" (click)="pdf(false)">Download PDF</button>
+            } @else {
+              <button type="button" (click)="closeEditor()">Close editor</button>
+            }
+          </div>
+        </form>
+      } @else {
+        <input
+          class="content-search"
+          aria-label="Search content"
+          placeholder="Search content"
+          [(ngModel)]="search"
+        />
+        <div cdkDropList [cdkDropListDisabled]="!!search||busy()" (cdkDropListDropped)="reorder($event.previousIndex,$event.currentIndex)">
+        @for (row of filteredRows(); track row.id; let i = $index) {
+          <article
+            class="list-row"
+            cdkDrag cdkDragLockAxis="y" cdkDragPreviewContainer="parent"
+          >
+            <span class="drag" cdkDragHandle>⠿</span>
+            @if (thumbnail(row)) {
+              <img class="row-thumbnail" [src]="thumbnail(row)" alt="" />
+            }
+            <div>
+              <b>{{ display(row) }}</b>
+              <p>{{ row.data["date"] || row.data["slug"] || "" }}</p>
+            </div>
+            <div class="actions">
+              <button
+                (click)="reorder(rows().indexOf(row), rows().indexOf(row) - 1)"
+                [disabled]="rows().indexOf(row)===0 || busy()"
+                aria-label="Move up"
+              >
+                ↑</button
+              ><button
+                (click)="reorder(rows().indexOf(row), rows().indexOf(row) + 1)"
+                [disabled]="rows().indexOf(row)===rows().length-1 || busy()"
+                aria-label="Move down"
+              >
+                ↓</button
+              ><button (click)="edit(row)">Edit</button
+              ><button class="danger-button" (click)="remove(row)">Delete</button>
+            </div>
+          </article>
+        } @empty {
+          <p>No items. Add your first one.</p>
+        }
+        </div>
+      }
+      </div>
+    </main>
+  }
+  <studio-media-viewer [items]="gallery()" [selected]="mediaSelection()" (closed)="mediaSelection.set(null)"/>
+  @if(busy()){<div class="operation-progress" role="status" aria-label="Saving changes"><span></span></div>}
+  @if(modal();as dialog){<div class="modal-backdrop" (click)="closeModal()"><section class="studio-modal" role="alertdialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description" data-studio-modal (click)="$event.stopPropagation()" (keydown.escape)="closeModal()" (keydown.tab)="trapModal($event)"><span class="modal-symbol" [class.danger]="dialog.danger">{{dialog.danger?'!':'↗'}}</span><h2 id="modal-title">{{dialog.title}}</h2><p id="modal-description">{{dialog.message}}</p>@if(dialog.input){<input [type]="dialog.input" [(ngModel)]="modalValue" aria-label="Dialog value" autofocus placeholder="Enter a value…"/>}<div class="actions"><button (click)="closeModal()" autofocus>Cancel</button><button [class.danger-button]="dialog.danger" class="primary" (click)="closeModal(true)">{{dialog.label}}</button></div></section></div>}
+</div>
+
+
+
+
+
+
+
+
+
