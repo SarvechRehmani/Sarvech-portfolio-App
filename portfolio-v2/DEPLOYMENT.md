@@ -1,17 +1,18 @@
-# Deploy Angular directly to Netlify + Supabase
+# Existing Netlify deployment
 
-No Spring Boot server, Render service, Docker deployment or API proxy is required.
+Live site: https://sarvech.is-a.dev
+Repository: https://github.com/SarvechRehmani/Sarvech-portfolio-App
 
-1. Push this frontend folder to its own GitHub repository. `.env`, `.local`, dependencies and build output are ignored. Only public Supabase settings belong in the frontend.
-2. In Netlify, import the GitHub repository. Build command: `npm ci && npm run build`. Publish directory: `dist/portfolio/browser`. Set Node.js version to 22 or newer.
-3. Optionally set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in Netlify; otherwise the connected project's public settings in `public/config.json` are used. Remove old `API_URL` and `API_PROXY` settings. Never supply `SUPABASE_SECRET_KEY`, a service-role key, JWT signing secret or database password.
-4. Deploy. `netlify.toml` configures SPA routes, admin noindex headers and the sharing metadata edge function. The edge function reads published Supabase data with the same public key; it does not handle CRUD/auth/uploads.
-5. In Supabase Authentication URL configuration, set the Site URL to your Netlify/custom domain. Keep public sign-ups disabled. Ensure the owner's Auth user exists in `portfolio_api.admins`. Password login does not require an OAuth redirect.
-6. Check home/projects/blog sharing metadata, `/admin` login, save → draft preview → publish, image upload, both resume modes, and contact inbox. Test analytics from a fresh non-owner browser on the deployed domain; localhost and the admin browser intentionally do not count.
+The original static portfolio remains unchanged at the repository root. The current Angular project is in `portfolio-v2/`; the root `netlify.toml` selects that base directory, Node.js 22 and `dist/portfolio/browser` as the publish directory.
 
-The existing Supabase database and Storage files are already configured. No additional database import is needed for this connected project. If you later create a different Supabase project, follow the migration/admin instructions in README and move the content and Storage objects deliberately.
+For future releases, edit this Angular project, run `npm ci`, `npm test` and `npm run build`, then commit and push to `main`. The existing Netlify project `sarvech` automatically builds and publishes the update on the same domain.
 
-Admin authentication now uses Supabase's access/refresh JWT session lifecycle. A previous Spring login is not a Supabase session; sign in again once after this migration. Signing out uses Supabase Auth.
+Only the Angular build output is hosted. Local archives, ZIPs, verification documents and credentials are excluded. The `supabase/` source and tests document the matching integration and are not deployed to Netlify.
 
-Visitor-location analytics uses the JWT-protected portfolio-mail/analytics Edge route. Keep its JWT verification enabled. public/config.json includes the connected project''s public anon gateway key. For another project, set SUPABASE_FUNCTIONS_ANON_KEY in Netlify to its PUBLIC anon JWT; never a service-role key. See docs/ANNOTATION-UPDATE.md for retention and verification details.
+The existing Supabase database, Storage and Edge Functions stay in place. Do not rerun migrations just to deploy the frontend. `public/config.json` contains public client settings only; SMTP credentials, signing secrets and service-role keys must stay in Supabase.
 
+Supabase Authentication should use Site URL `https://sarvech.is-a.dev` and the exact redirect `https://sarvech.is-a.dev/admin/login`. Keep public sign-ups disabled. Password login uses the existing owner account and configured MFA.
+
+Verify `/`, `/recruiter`, `/admin/login`, a published project, image/PDF assets and the contact form after deployment. A new live browser visit can count in analytics; localhost and browsers marked as the administrator are intentionally excluded.
+
+Rollback: republish the previous successful Netlify deployment. The original source is also preserved under Git tag `portfolio-v1-before-v2`; do not force-push or erase repository history.
